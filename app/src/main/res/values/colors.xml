@@ -2,4 +2,14 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="cm_primary">#1E4D8C</color>
+    <color name="cm_primary_dark">#12325C</color>
+    <color name="cm_on_primary">#FFFFFF</color>
+    <color name="cm_secondary">#00897B</color>
+    <color name="cm_on_secondary">#FFFFFF</color>
+    <color name="cm_background">#F6F8FB</color>
+    <color name="cm_surface">#FFFFFF</color>
+    <color name="cm_on_surface">#1B1F24</color>
+    <color name="cm_error">#B3261E</color>
 </resources>
