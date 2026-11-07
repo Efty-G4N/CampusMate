@@ -6,11 +6,11 @@ Status: ⬜ Not started | 🟨 In progress | 🟩 Implemented | ✅ Tested
 - 🟨 Project folder structure
 - 🟨 Activity lifecycle
 - ✅ Explicit Intent
-- ⬜ Implicit Intent
+- ✅ Implicit Intent
 - 🟨 Button click handling
 - 🟨 ConstraintLayout
-- 🟩 RelativeLayout
-- ⬜ LinearLayout
+- ✅ RelativeLayout
+- ✅ LinearLayout
 - ✅ View Binding
 
 ## Lecture 9
