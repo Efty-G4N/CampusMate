@@ -56,6 +56,6 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 - ✅ Database design (tables and relationships)
 - ✅ DatabaseHelper (SQLiteOpenHelper, foreign keys, migration to version 2)
 - ✅ Semester and Course models and repositories (CRUD, search, current semester)
-- 🟩 Teacher model and repository, CourseTeacher links (assign, JOIN queries)
-- 🟩 Initial KUET data (2-2 term courses, teachers with room, phone, email; routine later)
+- ✅ Teacher model and repository, CourseTeacher links (assign, JOIN queries)
+- ✅ Initial KUET data (2-2 term courses, teachers with room, phone, email; routine later)
 - ⬜ Profile (model, repository)
