@@ -17,7 +17,10 @@ import com.eftyg4n.campusmate.fragments.HomeFragment;
 import com.eftyg4n.campusmate.fragments.ProfileFragment;
 import com.eftyg4n.campusmate.fragments.ResourcesFragment;
 import com.eftyg4n.campusmate.fragments.ScheduleFragment;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
+import com.eftyg4n.campusmate.database.DatabaseHelper;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "CampusMate_Lifecycle";
@@ -32,6 +35,15 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // TEMPORARY: database check (remove after Phase 2 testing)
+        SQLiteDatabase db = DatabaseHelper.getInstance(this).getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' "
+                + "AND name NOT LIKE 'android_%' AND name NOT LIKE 'sqlite_%'", null);
+        while (cursor.moveToNext()) {
+            Log.d("CampusMate_DB", "Table: " + cursor.getString(0));
+        }
+        cursor.close();
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
