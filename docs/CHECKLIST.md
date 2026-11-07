@@ -4,14 +4,14 @@ Status: ⬜ Not started | 🟨 In progress | 🟩 Implemented | ✅ Tested
 
 ## Lecture 8
 - ⬜ Project folder structure
-- ⬜ Activity lifecycle
+- 🟨 Activity lifecycle
 - ⬜ Explicit Intent
 - ⬜ Implicit Intent
-- ⬜ Button click handling
+- 🟨 Button click handling
 - ⬜ ConstraintLayout
 - ⬜ RelativeLayout
 - ⬜ LinearLayout
-- ⬜ View Binding
+- ✅ View Binding
 
 ## Lecture 9
 - ⬜ ListView + ArrayAdapter + item click
