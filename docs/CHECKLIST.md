@@ -3,12 +3,12 @@
 Status: ⬜ Not started | 🟨 In progress | 🟩 Implemented | ✅ Tested
 
 ## Lecture 8
-- 🟨 Project folder structure
-- 🟨 Activity lifecycle
+- ✅ Project folder structure
+- ✅ Activity lifecycle
 - ✅ Explicit Intent
 - ✅ Implicit Intent
-- 🟨 Button click handling
-- 🟨 ConstraintLayout
+- ✅ Button click handling
+- ✅ ConstraintLayout
 - ✅ RelativeLayout
 - ✅ LinearLayout
 - ✅ View Binding
