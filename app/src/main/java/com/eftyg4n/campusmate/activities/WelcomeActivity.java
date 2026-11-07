@@ -9,7 +9,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.eftyg4n.campusmate.databinding.ActivityWelcomeBinding;
-
+import com.eftyg4n.campusmate.R;
 public class WelcomeActivity extends AppCompatActivity {
 
     public static final String EXTRA_NAME = "extra_student_name";
@@ -31,9 +31,9 @@ public class WelcomeActivity extends AppCompatActivity {
 
         String name = getIntent().getStringExtra(EXTRA_NAME);
         if (name == null) {
-            name = "Student";
+            name = getString(R.string.welcome_default_name);
         }
-        binding.textWelcome.setText("Welcome, " + name + "!");
+        binding.textWelcome.setText(getString(R.string.welcome_message, name));
 
         binding.buttonBack.setOnClickListener(view -> finish());
     }

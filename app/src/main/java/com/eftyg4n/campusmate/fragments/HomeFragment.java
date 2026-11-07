@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.eftyg4n.campusmate.activities.WelcomeActivity;
 import com.eftyg4n.campusmate.databinding.FragmentHomeBinding;
+import com.eftyg4n.campusmate.R;
 
 public class HomeFragment extends Fragment {
 
@@ -28,11 +29,13 @@ public class HomeFragment extends Fragment {
         binding.buttonTest.setOnClickListener(view -> {
             clickCount++;
             binding.textStatus.setText("Button clicked " + clickCount + " time(s)");
+            binding.textStatus.setText(getString(R.string.home_status_clicked, clickCount));
         });
 
         binding.buttonOpenWelcome.setOnClickListener(view -> {
             Intent intent = new Intent(requireContext(), WelcomeActivity.class);
             intent.putExtra(WelcomeActivity.EXTRA_NAME, "Student");
+            intent.putExtra(WelcomeActivity.EXTRA_NAME, getString(R.string.welcome_default_name));
             startActivity(intent);
         });
 

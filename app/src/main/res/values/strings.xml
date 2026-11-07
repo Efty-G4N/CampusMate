@@ -1,3 +1,39 @@
 <resources>
     <string name="app_name">CampusMate</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_courses">Courses</string>
+    <string name="nav_schedule">Schedule</string>
+    <string name="nav_resources">Resources</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Home -->
+    <string name="home_title">CampusMate Home</string>
+    <string name="home_subtitle">View Binding is working</string>
+    <string name="home_button_click">Click me</string>
+    <string name="home_button_open_welcome">Open Welcome screen</string>
+    <string name="home_status_clicked">Button clicked %1$d time(s)</string>
+
+    <!-- Welcome -->
+    <string name="welcome_title">Welcome</string>
+    <string name="welcome_message">Welcome, %1$s!</string>
+    <string name="welcome_default_name">Student</string>
+    <string name="welcome_button_back">Go back</string>
+
+    <!-- Placeholder screens -->
+    <string name="courses_title">Courses</string>
+    <string name="schedule_title">Schedule</string>
+    <string name="profile_title">Profile</string>
+
+    <!-- Resources -->
+    <string name="resources_title">Resources</string>
+    <string name="resources_hint_url">Enter a link (e.g. example.com)</string>
+    <string name="resources_button_open_link">Open link</string>
+    <string name="resources_hint_share_text">Text to share</string>
+    <string name="resources_button_share">Share</string>
+    <string name="resources_error_empty_url">Enter a link</string>
+    <string name="resources_error_empty_text">Enter some text</string>
+    <string name="resources_toast_no_app">No app found to open this link</string>
+    <string name="resources_share_chooser">Share via</string>
 </resources>

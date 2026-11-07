@@ -9,7 +9,7 @@
         android:id="@+id/textTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Resources"
+        android:text="@string/resources_title"
         android:textSize="28sp"
         android:textStyle="bold" />
 
@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:hint="Enter a link (e.g. example.com)"
+        android:hint="@string/resources_hint_url"
         android:inputType="textUri"
         android:minHeight="48dp" />
 
@@ -27,14 +27,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Open link" />
+        android:text="@string/resources_button_open_link" />
 
     <EditText
         android:id="@+id/editShareText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:hint="Text to share"
+        android:hint="@string/resources_hint_share_text"
         android:inputType="textMultiLine"
         android:minHeight="48dp" />
 
@@ -43,6 +43,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Share" />
+        android:text="@string/resources_button_share" />
 
 </LinearLayout>
