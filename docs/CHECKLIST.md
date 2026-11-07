@@ -2,6 +2,8 @@
 
 Status: ⬜ Not started | 🟨 In progress | 🟩 Implemented | ✅ Tested
 
+Note: Lecture 8-11 here mean course Lecture 1-4.
+
 ## Lecture 8
 - ✅ Project folder structure
 - ✅ Activity lifecycle
@@ -36,3 +38,25 @@ Status: ⬜ Not started | 🟨 In progress | 🟩 Implemented | ✅ Tested
 - ⬜ Firebase Storage upload/retrieve
 - ⬜ Volley HTTP request + JSON parsing (Open Library)
 - ⬜ Glide (placeholder, error)
+
+---
+
+# Project Progress
+
+## Phase 1: Foundation
+- ✅ Package structure (activities, fragments, adapters, models, database, repositories, firebase, storage, network, services, receivers, notifications, utils, dialogs)
+- ✅ MainActivity with BottomNavigationView and 5 fragments (Home, Courses, Schedule, Resources, Profile)
+- ✅ WelcomeActivity (RelativeLayout, explicit Intent)
+- ✅ Resources screen (LinearLayout, implicit Intents: open link, share text)
+- ✅ Theme and colors (light and dark)
+- ✅ Hardcoded strings moved to strings.xml
+- 🟩 Home counter state kept on rotation (onSaveInstanceState), waiting for phone test
+
+## Phase 2: Local data (SQLite)
+- ⬜ Database design (tables and relationships)
+- ⬜ DatabaseHelper (SQLiteOpenHelper)
+- ⬜ Profile
+- ⬜ Semester
+- ⬜ Course
+- ⬜ Teacher and CourseTeacher
+- ⬜ Initial KUET data (2-2 term courses, teachers, routine)
