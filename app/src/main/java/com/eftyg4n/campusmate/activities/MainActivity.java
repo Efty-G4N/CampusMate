@@ -1,6 +1,5 @@
 package com.eftyg4n.campusmate.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -9,15 +8,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
+import com.eftyg4n.campusmate.R;
 import com.eftyg4n.campusmate.databinding.ActivityMainBinding;
+import com.eftyg4n.campusmate.fragments.CoursesFragment;
+import com.eftyg4n.campusmate.fragments.HomeFragment;
+import com.eftyg4n.campusmate.fragments.ProfileFragment;
+import com.eftyg4n.campusmate.fragments.ResourcesFragment;
+import com.eftyg4n.campusmate.fragments.ScheduleFragment;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "CampusMate_Lifecycle";
 
     private ActivityMainBinding binding;
-    private int clickCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +39,34 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        binding.buttonTest.setOnClickListener(view -> {
-            clickCount++;
-            binding.textStatus.setText("Button clicked " + clickCount + " time(s)");
+        binding.bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                showFragment(new HomeFragment());
+            } else if (id == R.id.nav_courses) {
+                showFragment(new CoursesFragment());
+            } else if (id == R.id.nav_schedule) {
+                showFragment(new ScheduleFragment());
+            } else if (id == R.id.nav_resources) {
+                showFragment(new ResourcesFragment());
+            } else if (id == R.id.nav_profile) {
+                showFragment(new ProfileFragment());
+            } else {
+                return false;
+            }
+            return true;
         });
 
-        binding.buttonOpenWelcome.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
-            intent.putExtra(WelcomeActivity.EXTRA_NAME, "Student");
-            startActivity(intent);
-        });
+        if (savedInstanceState == null) {
+            binding.bottomNav.setSelectedItemId(R.id.nav_home);
+        }
+    }
+
+    private void showFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .commit();
     }
 
     @Override
