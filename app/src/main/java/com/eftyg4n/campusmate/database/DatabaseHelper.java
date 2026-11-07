@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "campusmate.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     // ---------- Sync status values ----------
     public static final int SYNC_PENDING = 0;
@@ -61,6 +61,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_TEACHER_DEPARTMENT = "department";
     public static final String COL_TEACHER_EMAIL = "email";
     public static final String COL_TEACHER_PHONE = "phone";
+
+    public static final String COL_TEACHER_DESIGNATION = "designation";
+    public static final String COL_TEACHER_ROOM_NO = "room_no";
+    public static final String COL_TEACHER_EXTENSION = "extension";
 
     // ---------- Table: course_teacher ----------
     public static final String TABLE_COURSE_TEACHER = "course_teacher";
@@ -145,6 +149,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COL_TEACHER_DEPARTMENT + " TEXT, "
                 + COL_TEACHER_EMAIL + " TEXT, "
                 + COL_TEACHER_PHONE + " TEXT, "
+                + COL_TEACHER_DESIGNATION + " TEXT, "
+                + COL_TEACHER_ROOM_NO + " TEXT, "
+                + COL_TEACHER_EXTENSION + " TEXT, "
                 + COL_CREATED_AT + " INTEGER NOT NULL, "
                 + COL_UPDATED_AT + " INTEGER NOT NULL, "
                 + COL_SYNC_STATUS + " INTEGER NOT NULL DEFAULT 0)");
@@ -163,12 +170,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Development only: drop everything and create again.
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_COURSE_TEACHER);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_COURSE);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TEACHER);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SEMESTER);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER_PROFILE);
-        onCreate(db);
+        // Version 1 -> 2: teachers get designation, room number and extension.
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE " + TABLE_TEACHER + " ADD COLUMN "
+                    + COL_TEACHER_DESIGNATION + " TEXT");
+            db.execSQL("ALTER TABLE " + TABLE_TEACHER + " ADD COLUMN "
+                    + COL_TEACHER_ROOM_NO + " TEXT");
+            db.execSQL("ALTER TABLE " + TABLE_TEACHER + " ADD COLUMN "
+                    + COL_TEACHER_EXTENSION + " TEXT");
+        }
     }
 }

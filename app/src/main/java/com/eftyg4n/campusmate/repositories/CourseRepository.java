@@ -109,6 +109,26 @@ public class CourseRepository {
         }
         return list;
     }
+    // Courses taught by one teacher (JOIN with the course_teacher table).
+    public List<Course> getByTeacher(String teacherId) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String sql = "SELECT c.* FROM " + TABLE_COURSE + " c INNER JOIN "
+                + TABLE_COURSE_TEACHER + " ct ON ct." + COL_CT_COURSE_ID
+                + " = c." + COL_ID
+                + " WHERE ct." + COL_CT_TEACHER_ID + " = ?"
+                + " ORDER BY c." + COL_COURSE_CODE + " ASC";
+
+        List<Course> list = new ArrayList<>();
+        Cursor cursor = db.rawQuery(sql, new String[]{teacherId});
+        try {
+            while (cursor.moveToNext()) {
+                list.add(fromCursor(cursor));
+            }
+        } finally {
+            cursor.close();
+        }
+        return list;
+    }
 
     private ContentValues toValues(Course c) {
         ContentValues values = new ContentValues();

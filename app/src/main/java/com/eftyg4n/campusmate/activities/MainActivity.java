@@ -22,6 +22,9 @@ import com.eftyg4n.campusmate.models.Course;
 import com.eftyg4n.campusmate.models.Semester;
 import com.eftyg4n.campusmate.repositories.CourseRepository;
 import com.eftyg4n.campusmate.repositories.SemesterRepository;
+import com.eftyg4n.campusmate.database.KuetSeedData;
+import com.eftyg4n.campusmate.models.Teacher;
+import com.eftyg4n.campusmate.repositories.TeacherRepository;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "CampusMate_Lifecycle";
@@ -37,56 +40,36 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // TEMPORARY: repository test (remove after Phase 2 testing)
+        // TEMPORARY: seed and repository test (remove after Phase 2 testing)
         String dbTag = "CampusMate_DB";
+        KuetSeedData.seedIfEmpty(this);
+
         SemesterRepository semesterRepo = new SemesterRepository(this);
         CourseRepository courseRepo = new CourseRepository(this);
-
-        if (semesterRepo.getAll().isEmpty()) {
-            Semester semester = new Semester();
-            semester.setName("2nd Year 2nd Term");
-            semester.setSession("2024-2025");
-            semester.setYearNo(2);
-            semester.setTermNo(2);
-            semester.setSection("A");
-            semester.setCurrent(true);
-            String semesterId = semesterRepo.insert(semester);
-
-            Course theory = new Course();
-            theory.setSemesterId(semesterId);
-            theory.setCode("CSE 2209");
-            theory.setTitle("Theory of Computation");
-            theory.setCredits(2.0);
-            theory.setType(Course.TYPE_THEORY);
-            courseRepo.insert(theory);
-
-            Course lab = new Course();
-            lab.setSemesterId(semesterId);
-            lab.setCode("CSE 2200");
-            lab.setTitle("Advanced Programming Laboratory");
-            lab.setCredits(1.5);
-            lab.setType(Course.TYPE_LAB);
-            courseRepo.insert(lab);
-
-            Course duplicate = new Course();
-            duplicate.setSemesterId(semesterId);
-            duplicate.setCode("CSE 2209");
-            duplicate.setTitle("Duplicate test");
-            Log.d(dbTag, "Duplicate insert result: " + courseRepo.insert(duplicate));
-        }
+        TeacherRepository teacherRepo = new TeacherRepository(this);
 
         Semester current = semesterRepo.getCurrent();
         if (current != null) {
-            Log.d(dbTag, "Current semester: " + current.getName());
-            for (Course item : courseRepo.getBySemester(current.getId())) {
-                Log.d(dbTag, "Course: " + item.getCode() + " - " + item.getTitle()
-                        + " (" + item.getType() + ", " + item.getCredits() + ")");
+            Log.d(dbTag, "Current semester: " + current.getName()
+                    + " (" + current.getSession() + ")");
+            for (Course course : courseRepo.getBySemester(current.getId())) {
+                StringBuilder codes = new StringBuilder();
+                for (Teacher teacher : teacherRepo.getByCourse(course.getId())) {
+                    codes.append(teacher.getShortCode()).append(' ');
+                }
+                Log.d(dbTag, course.getCode() + " -> " + codes.toString().trim());
             }
-            Log.d(dbTag, "Search 2209: "
-                    + courseRepo.search(current.getId(), "2209", null).size());
-            Log.d(dbTag, "Lab only: "
-                    + courseRepo.search(current.getId(), null, Course.TYPE_LAB).size());
         }
+
+        Teacher sa = teacherRepo.getByShortCode("SA");
+        if (sa != null) {
+            Log.d(dbTag, "SA: " + sa.getName() + " | " + sa.getRoomNo() + " | "
+                    + sa.getPhone() + " | " + sa.getEmail());
+            for (Course taught : courseRepo.getByTeacher(sa.getId())) {
+                Log.d(dbTag, "SA teaches: " + taught.getCode());
+            }
+        }
+        Log.d(dbTag, "Teachers total: " + teacherRepo.getAll().size());
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
