@@ -10,11 +10,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.eftyg4n.campusmate.R;
 import com.eftyg4n.campusmate.activities.WelcomeActivity;
 import com.eftyg4n.campusmate.databinding.FragmentHomeBinding;
-import com.eftyg4n.campusmate.R;
 
 public class HomeFragment extends Fragment {
+
+    private static final String KEY_CLICK_COUNT = "key_click_count";
 
     private FragmentHomeBinding binding;
     private int clickCount = 0;
@@ -26,20 +28,36 @@ public class HomeFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
+        if (savedInstanceState != null) {
+            clickCount = savedInstanceState.getInt(KEY_CLICK_COUNT, 0);
+        }
+        if (clickCount > 0) {
+            showClickStatus();
+        }
+
         binding.buttonTest.setOnClickListener(view -> {
             clickCount++;
-            binding.textStatus.setText("Button clicked " + clickCount + " time(s)");
-            binding.textStatus.setText(getString(R.string.home_status_clicked, clickCount));
+            showClickStatus();
         });
 
         binding.buttonOpenWelcome.setOnClickListener(view -> {
             Intent intent = new Intent(requireContext(), WelcomeActivity.class);
-            intent.putExtra(WelcomeActivity.EXTRA_NAME, "Student");
-            intent.putExtra(WelcomeActivity.EXTRA_NAME, getString(R.string.welcome_default_name));
+            intent.putExtra(WelcomeActivity.EXTRA_NAME,
+                    getString(R.string.welcome_default_name));
             startActivity(intent);
         });
 
         return binding.getRoot();
+    }
+
+    private void showClickStatus() {
+        binding.textStatus.setText(getString(R.string.home_status_clicked, clickCount));
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_CLICK_COUNT, clickCount);
     }
 
     @Override
