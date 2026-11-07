@@ -1,5 +1,6 @@
-package com.eftyg4n.campusmate;
+package com.eftyg4n.campusmate.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -21,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate");
+        Log.d(TAG, "MainActivity onCreate");
 
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -37,41 +38,47 @@ public class MainActivity extends AppCompatActivity {
             clickCount++;
             binding.textStatus.setText("Button clicked " + clickCount + " time(s)");
         });
+
+        binding.buttonOpenWelcome.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+            intent.putExtra(WelcomeActivity.EXTRA_NAME, "Student");
+            startActivity(intent);
+        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart");
+        Log.d(TAG, "MainActivity onStart");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
+        Log.d(TAG, "MainActivity onResume");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause");
+        Log.d(TAG, "MainActivity onPause");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(TAG, "onStop");
+        Log.d(TAG, "MainActivity onStop");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.d(TAG, "onRestart");
+        Log.d(TAG, "MainActivity onRestart");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy");
+        Log.d(TAG, "MainActivity onDestroy");
     }
 }
