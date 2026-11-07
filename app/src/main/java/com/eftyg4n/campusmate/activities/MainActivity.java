@@ -17,10 +17,11 @@ import com.eftyg4n.campusmate.fragments.HomeFragment;
 import com.eftyg4n.campusmate.fragments.ProfileFragment;
 import com.eftyg4n.campusmate.fragments.ResourcesFragment;
 import com.eftyg4n.campusmate.fragments.ScheduleFragment;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
-import com.eftyg4n.campusmate.database.DatabaseHelper;
+import com.eftyg4n.campusmate.models.Course;
+import com.eftyg4n.campusmate.models.Semester;
+import com.eftyg4n.campusmate.repositories.CourseRepository;
+import com.eftyg4n.campusmate.repositories.SemesterRepository;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "CampusMate_Lifecycle";
@@ -36,14 +37,56 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // TEMPORARY: database check (remove after Phase 2 testing)
-        SQLiteDatabase db = DatabaseHelper.getInstance(this).getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' "
-                + "AND name NOT LIKE 'android_%' AND name NOT LIKE 'sqlite_%'", null);
-        while (cursor.moveToNext()) {
-            Log.d("CampusMate_DB", "Table: " + cursor.getString(0));
+        // TEMPORARY: repository test (remove after Phase 2 testing)
+        String dbTag = "CampusMate_DB";
+        SemesterRepository semesterRepo = new SemesterRepository(this);
+        CourseRepository courseRepo = new CourseRepository(this);
+
+        if (semesterRepo.getAll().isEmpty()) {
+            Semester semester = new Semester();
+            semester.setName("2nd Year 2nd Term");
+            semester.setSession("2024-2025");
+            semester.setYearNo(2);
+            semester.setTermNo(2);
+            semester.setSection("A");
+            semester.setCurrent(true);
+            String semesterId = semesterRepo.insert(semester);
+
+            Course theory = new Course();
+            theory.setSemesterId(semesterId);
+            theory.setCode("CSE 2209");
+            theory.setTitle("Theory of Computation");
+            theory.setCredits(2.0);
+            theory.setType(Course.TYPE_THEORY);
+            courseRepo.insert(theory);
+
+            Course lab = new Course();
+            lab.setSemesterId(semesterId);
+            lab.setCode("CSE 2200");
+            lab.setTitle("Advanced Programming Laboratory");
+            lab.setCredits(1.5);
+            lab.setType(Course.TYPE_LAB);
+            courseRepo.insert(lab);
+
+            Course duplicate = new Course();
+            duplicate.setSemesterId(semesterId);
+            duplicate.setCode("CSE 2209");
+            duplicate.setTitle("Duplicate test");
+            Log.d(dbTag, "Duplicate insert result: " + courseRepo.insert(duplicate));
         }
-        cursor.close();
+
+        Semester current = semesterRepo.getCurrent();
+        if (current != null) {
+            Log.d(dbTag, "Current semester: " + current.getName());
+            for (Course item : courseRepo.getBySemester(current.getId())) {
+                Log.d(dbTag, "Course: " + item.getCode() + " - " + item.getTitle()
+                        + " (" + item.getType() + ", " + item.getCredits() + ")");
+            }
+            Log.d(dbTag, "Search 2209: "
+                    + courseRepo.search(current.getId(), "2209", null).size());
+            Log.d(dbTag, "Lab only: "
+                    + courseRepo.search(current.getId(), null, Course.TYPE_LAB).size());
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
