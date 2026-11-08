@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Intent;
+import com.eftyg4n.campusmate.activities.CourseDetailActivity;
+
 public class CoursesFragment extends Fragment {
 
     private FragmentCoursesBinding binding;
@@ -38,10 +40,11 @@ public class CoursesFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentCoursesBinding.inflate(inflater, container, false);
 
-        adapter = new CourseAdapter(requireContext(), course ->
-                Toast.makeText(requireContext(),
-                        course.getCode() + " - " + course.getTitle(),
-                        Toast.LENGTH_SHORT).show());
+        adapter = new CourseAdapter(requireContext(), course -> {
+            Intent intent = new Intent(requireContext(), CourseDetailActivity.class);
+            intent.putExtra(CourseDetailActivity.EXTRA_COURSE_ID, course.getId());
+            startActivity(intent);
+        });
 
         binding.recyclerCourses.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.recyclerCourses.setAdapter(adapter);

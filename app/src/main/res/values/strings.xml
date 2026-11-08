@@ -46,5 +46,25 @@
     <string name="course_meta">%1$s · %2$s credits</string>
     <string name="course_teachers">Teachers: %1$s</string>
     <string name="course_no_teachers">No teacher assigned</string>
+    <!-- Course detail -->
+    <string name="course_not_found">Course not found</string>
+    <string name="teachers_title">Teachers</string>
+    <string name="teachers_none">No teacher assigned to this course</string>
+    <string name="teacher_room">Room: %1$s</string>
+    <string name="teacher_ext">Ext: %1$s</string>
+    <string name="teacher_phone">Phone: %1$s</string>
+    <string name="teacher_email">Email: %1$s</string>
+    <string name="teacher_no_info">Contact details not added yet</string>
+    <string name="common_no_app">No app found for this action</string>
+
+    <string name="workspace_title">Course workspace</string>
+    <string name="workspace_attendance">Attendance</string>
+    <string name="workspace_marks">CT and Marks</string>
+    <string name="workspace_syllabus">Syllabus</string>
+    <string name="workspace_lectures">Lecture History</string>
+    <string name="workspace_resources">Notes and Resources</string>
+    <string name="workspace_deadlines">Assignments and Deadlines</string>
+    <string name="workspace_notices">Course Notices</string>
+    <string name="workspace_coming_soon">Coming soon</string>
 
 </resources>

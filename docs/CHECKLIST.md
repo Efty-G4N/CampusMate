@@ -64,5 +64,5 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 
 ## Phase 3: Main screens
 - ✅ Courses screen (RecyclerView, course cards, teacher short codes)
-- ⬜ Course detail screen (course-centered workspace)
+- ✅ Course detail screen (course header, teachers with room, phone, email; workspace buttons)
 - ⬜ Profile screen (form, validation, auto-detect from roll number)

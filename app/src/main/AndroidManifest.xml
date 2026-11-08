@@ -25,6 +25,9 @@
             android:name=".activities.WelcomeActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.CourseDetailActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
