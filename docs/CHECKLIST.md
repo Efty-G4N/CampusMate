@@ -54,8 +54,11 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 
 ## Phase 2: Local data (SQLite)
 - ✅ Database design (tables and relationships)
-- ✅ DatabaseHelper (SQLiteOpenHelper, foreign keys, migration to version 2)
+- ✅ DatabaseHelper (SQLiteOpenHelper, foreign keys, migrations)
 - ✅ Semester and Course models and repositories (CRUD, search, current semester)
 - ✅ Teacher model and repository, CourseTeacher links (assign, JOIN queries)
 - ✅ Initial KUET data (2-2 term courses, teachers with room, phone, email; routine later)
-- ⬜ Profile (model, repository)
+- 🟩 Customizable sections and lab groups (class_group, roll serial ranges)
+- 🟩 Classmate list loaded from assets CSV
+- 🟩 UserProfile model and repository (roll number, section, lab group)
+- ⬜ Profile screen (form, validation, auto-detect from roll number)

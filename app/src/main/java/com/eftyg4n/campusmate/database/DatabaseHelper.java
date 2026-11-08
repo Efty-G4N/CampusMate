@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "campusmate.db";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
 
     // ---------- Sync status values ----------
     public static final int SYNC_PENDING = 0;
@@ -31,6 +31,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_PROFILE_TERM = "term_no";
     public static final String COL_PROFILE_SECTION = "section";
     public static final String COL_PROFILE_PHOTO_URI = "photo_uri";
+    public static final String COL_PROFILE_ROLL_NO = "roll_no";
+    public static final String COL_PROFILE_LAB_GROUP = "lab_group";
+    public static final String COL_PROFILE_SERIAL_DIGITS = "roll_serial_digits";
 
     // ---------- Table: semester ----------
     public static final String TABLE_SEMESTER = "semester";
@@ -61,15 +64,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_TEACHER_DEPARTMENT = "department";
     public static final String COL_TEACHER_EMAIL = "email";
     public static final String COL_TEACHER_PHONE = "phone";
-
     public static final String COL_TEACHER_DESIGNATION = "designation";
     public static final String COL_TEACHER_ROOM_NO = "room_no";
     public static final String COL_TEACHER_EXTENSION = "extension";
+
 
     // ---------- Table: course_teacher ----------
     public static final String TABLE_COURSE_TEACHER = "course_teacher";
     public static final String COL_CT_COURSE_ID = "course_id";
     public static final String COL_CT_TEACHER_ID = "teacher_id";
+    // ---------- Table: class_group (sections and lab groups by roll range) ----------
+    public static final String TABLE_CLASS_GROUP = "class_group";
+    public static final String COL_GROUP_SEMESTER_ID = "semester_id";
+    public static final String COL_GROUP_PARENT_ID = "parent_id";
+    public static final String COL_GROUP_NAME = "name";
+    public static final String COL_GROUP_TYPE = "type";
+    public static final String COL_GROUP_ROLL_FROM = "roll_from";
+    public static final String COL_GROUP_ROLL_TO = "roll_to";
+
+    // ---------- Table: classmate ----------
+    public static final String TABLE_CLASSMATE = "classmate";
+    public static final String COL_CLASSMATE_ROLL_NO = "roll_no";
+    public static final String COL_CLASSMATE_FULL_NAME = "full_name";
 
     private static DatabaseHelper instance;
 
@@ -104,6 +120,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COL_PROFILE_TERM + " INTEGER, "
                 + COL_PROFILE_SECTION + " TEXT, "
                 + COL_PROFILE_PHOTO_URI + " TEXT, "
+                + COL_PROFILE_ROLL_NO + " TEXT, "
+                + COL_PROFILE_LAB_GROUP + " TEXT, "
+                + COL_PROFILE_SERIAL_DIGITS + " INTEGER NOT NULL DEFAULT 3, "
                 + COL_CREATED_AT + " INTEGER NOT NULL, "
                 + COL_UPDATED_AT + " INTEGER NOT NULL, "
                 + COL_SYNC_STATUS + " INTEGER NOT NULL DEFAULT 0)");
@@ -166,6 +185,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + TABLE_COURSE + "(" + COL_ID + ") ON DELETE CASCADE, "
                 + "FOREIGN KEY (" + COL_CT_TEACHER_ID + ") REFERENCES "
                 + TABLE_TEACHER + "(" + COL_ID + ") ON DELETE CASCADE)");
+        createClassGroupTable(db);
+        createClassmateTable(db);
+    }
+    private void createClassGroupTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + TABLE_CLASS_GROUP + " ("
+                + COL_ID + " TEXT PRIMARY KEY, "
+                + COL_OWNER_UID + " TEXT, "
+                + COL_GROUP_SEMESTER_ID + " TEXT NOT NULL, "
+                + COL_GROUP_PARENT_ID + " TEXT, "
+                + COL_GROUP_NAME + " TEXT NOT NULL, "
+                + COL_GROUP_TYPE + " TEXT NOT NULL, "
+                + COL_GROUP_ROLL_FROM + " INTEGER NOT NULL, "
+                + COL_GROUP_ROLL_TO + " INTEGER NOT NULL, "
+                + COL_CREATED_AT + " INTEGER NOT NULL, "
+                + COL_UPDATED_AT + " INTEGER NOT NULL, "
+                + COL_SYNC_STATUS + " INTEGER NOT NULL DEFAULT 0, "
+                + "UNIQUE (" + COL_GROUP_SEMESTER_ID + ", " + COL_GROUP_NAME + "), "
+                + "FOREIGN KEY (" + COL_GROUP_SEMESTER_ID + ") REFERENCES "
+                + TABLE_SEMESTER + "(" + COL_ID + ") ON DELETE CASCADE, "
+                + "FOREIGN KEY (" + COL_GROUP_PARENT_ID + ") REFERENCES "
+                + TABLE_CLASS_GROUP + "(" + COL_ID + ") ON DELETE CASCADE)");
+    }
+
+    private void createClassmateTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + TABLE_CLASSMATE + " ("
+                + COL_ID + " TEXT PRIMARY KEY, "
+                + COL_OWNER_UID + " TEXT, "
+                + COL_CLASSMATE_ROLL_NO + " TEXT NOT NULL UNIQUE, "
+                + COL_CLASSMATE_FULL_NAME + " TEXT NOT NULL, "
+                + COL_CREATED_AT + " INTEGER NOT NULL, "
+                + COL_UPDATED_AT + " INTEGER NOT NULL, "
+                + COL_SYNC_STATUS + " INTEGER NOT NULL DEFAULT 0)");
     }
 
     @Override
@@ -178,6 +229,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + COL_TEACHER_ROOM_NO + " TEXT");
             db.execSQL("ALTER TABLE " + TABLE_TEACHER + " ADD COLUMN "
                     + COL_TEACHER_EXTENSION + " TEXT");
+        }
+        // Version 2 -> 3: roll number and lab group in profile, class groups, classmates.
+        if (oldVersion < 3) {
+            db.execSQL("ALTER TABLE " + TABLE_USER_PROFILE + " ADD COLUMN "
+                    + COL_PROFILE_ROLL_NO + " TEXT");
+            db.execSQL("ALTER TABLE " + TABLE_USER_PROFILE + " ADD COLUMN "
+                    + COL_PROFILE_LAB_GROUP + " TEXT");
+            db.execSQL("ALTER TABLE " + TABLE_USER_PROFILE + " ADD COLUMN "
+                    + COL_PROFILE_SERIAL_DIGITS + " INTEGER NOT NULL DEFAULT 3");
+            createClassGroupTable(db);
+            createClassmateTable(db);
         }
     }
 }

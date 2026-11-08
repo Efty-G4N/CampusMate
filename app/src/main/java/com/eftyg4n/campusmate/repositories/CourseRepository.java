@@ -109,6 +109,7 @@ public class CourseRepository {
         }
         return list;
     }
+
     // Courses taught by one teacher (JOIN with the course_teacher table).
     public List<Course> getByTeacher(String teacherId) {
         SQLiteDatabase db = helper.getReadableDatabase();

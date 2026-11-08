@@ -9,6 +9,19 @@ import com.eftyg4n.campusmate.models.Teacher;
 import com.eftyg4n.campusmate.repositories.CourseRepository;
 import com.eftyg4n.campusmate.repositories.SemesterRepository;
 import com.eftyg4n.campusmate.repositories.TeacherRepository;
+import android.util.Log;
+
+import com.eftyg4n.campusmate.models.ClassGroup;
+import com.eftyg4n.campusmate.models.Classmate;
+import com.eftyg4n.campusmate.repositories.ClassGroupRepository;
+import com.eftyg4n.campusmate.repositories.ClassmateRepository;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 // Sample data: KUET CSE, 2nd Year 2nd Term, Session 2024-2025.
 // Inserted only once, when the database has no semester yet.
@@ -86,6 +99,18 @@ public class KuetSeedData {
             {"RA", "FA"},
             {"ARJ", "HZ"}
     };
+    private static final String STUDENTS_CSV = "kuet_cse_2023_students.csv";
+
+    // name, type, parent section name (null for a section), roll serial from, to
+    // Lab groups come after their section, because the section must exist first.
+    private static final String[][] CLASS_GROUPS = {
+            {"A", ClassGroup.TYPE_SECTION, null, "1", "60"},
+            {"B", ClassGroup.TYPE_SECTION, null, "61", "999"},
+            {"A1", ClassGroup.TYPE_LAB_GROUP, "A", "1", "30"},
+            {"A2", ClassGroup.TYPE_LAB_GROUP, "A", "31", "60"},
+            {"B1", ClassGroup.TYPE_LAB_GROUP, "B", "61", "90"},
+            {"B2", ClassGroup.TYPE_LAB_GROUP, "B", "91", "999"}
+    };
 
     private KuetSeedData() {
     }
@@ -156,5 +181,76 @@ public class KuetSeedData {
         } finally {
             db.endTransaction();
         }
+    }
+    // Adds sections, lab groups and the classmate list to the current semester.
+    // Each part is inserted only if it is still empty, so this is safe to call every time.
+    public static void seedClassData(Context context) {
+        Semester current = new SemesterRepository(context).getCurrent();
+        if (current == null) {
+            return;
+        }
+
+        ClassGroupRepository groupRepo = new ClassGroupRepository(context);
+        ClassmateRepository classmateRepo = new ClassmateRepository(context);
+
+        if (groupRepo.count(current.getId()) == 0) {
+            SQLiteDatabase db = DatabaseHelper.getInstance(context).getWritableDatabase();
+            db.beginTransaction();
+            try {
+                String[] ids = new String[CLASS_GROUPS.length];
+                for (int i = 0; i < CLASS_GROUPS.length; i++) {
+                    String parentId = null;
+                    if (CLASS_GROUPS[i][2] != null) {
+                        for (int j = 0; j < i; j++) {
+                            if (CLASS_GROUPS[j][0].equals(CLASS_GROUPS[i][2])) {
+                                parentId = ids[j];
+                            }
+                        }
+                    }
+
+                    ClassGroup group = new ClassGroup();
+                    group.setSemesterId(current.getId());
+                    group.setName(CLASS_GROUPS[i][0]);
+                    group.setType(CLASS_GROUPS[i][1]);
+                    group.setParentId(parentId);
+                    group.setRollFrom(Integer.parseInt(CLASS_GROUPS[i][3]));
+                    group.setRollTo(Integer.parseInt(CLASS_GROUPS[i][4]));
+                    ids[i] = groupRepo.insert(group);
+                    if (ids[i] == null) {
+                        return;
+                    }
+                }
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+        }
+
+        if (classmateRepo.count() == 0) {
+            classmateRepo.insertAll(readStudentsFromAssets(context));
+        }
+    }
+
+    // Reads assets/kuet_cse_2023_students.csv (header: roll_no,full_name).
+    private static List<Classmate> readStudentsFromAssets(Context context) {
+        List<Classmate> list = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                context.getAssets().open(STUDENTS_CSV), StandardCharsets.UTF_8))) {
+            String line = reader.readLine(); // header line, skipped
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                int comma = line.indexOf(',');
+                if (comma <= 0) {
+                    continue;
+                }
+                Classmate classmate = new Classmate();
+                classmate.setRollNo(line.substring(0, comma).trim());
+                classmate.setFullName(line.substring(comma + 1).trim());
+                list.add(classmate);
+            }
+        } catch (IOException e) {
+            Log.e("CampusMate_DB", "Could not read " + STUDENTS_CSV, e);
+        }
+        return list;
     }
 }
