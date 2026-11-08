@@ -36,4 +36,15 @@
     <string name="resources_error_empty_text">Enter some text</string>
     <string name="resources_toast_no_app">No app found to open this link</string>
     <string name="resources_share_chooser">Share via</string>
+    <!-- Courses screen -->
+    <string name="courses_header">%1$s · %2$s · %3$d courses</string>
+    <string name="courses_empty">No courses in this semester yet</string>
+    <string name="courses_no_semester">No current semester selected</string>
+    <string name="course_type_theory">Theory</string>
+    <string name="course_type_lab">Laboratory</string>
+    <string name="course_type_custom">Custom</string>
+    <string name="course_meta">%1$s · %2$s credits</string>
+    <string name="course_teachers">Teachers: %1$s</string>
+    <string name="course_no_teachers">No teacher assigned</string>
+
 </resources>
