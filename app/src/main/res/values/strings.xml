@@ -66,5 +66,35 @@
     <string name="workspace_deadlines">Assignments and Deadlines</string>
     <string name="workspace_notices">Course Notices</string>
     <string name="workspace_coming_soon">Coming soon</string>
+    <!-- Profile screen -->
+    <string name="profile_section_student">Student</string>
+    <string name="profile_section_academic">Academic information</string>
+    <string name="profile_name_placeholder">Complete your profile</string>
+    <string name="profile_hint_roll">Roll number</string>
+    <string name="profile_hint_name">Full name</string>
+    <string name="profile_hint_university">University</string>
+    <string name="profile_hint_department">Department</string>
+    <string name="profile_hint_session">Session (example: 2024-2025)</string>
+    <string name="profile_hint_year">Year</string>
+    <string name="profile_hint_term">Term</string>
+    <string name="profile_hint_section">Section</string>
+    <string name="profile_hint_lab_group">Lab group</string>
+    <string name="profile_hint_serial_digits">Serial digits at the end of roll number</string>
+    <string name="profile_serial_help">How many last digits of the roll number are the student serial. KUET: 3. Change only if your institution uses a different roll format.</string>
+    <string name="profile_detect_found">Found in class list: %1$s</string>
+    <string name="profile_detect_not_found">Roll not found in the class list. You can type the name yourself.</string>
+    <string name="profile_button_save">Save profile</string>
+    <string name="profile_saved">Profile saved</string>
+    <string name="profile_save_failed">Could not save the profile</string>
+    <string name="profile_summary_roll">Roll %1$s</string>
+    <string name="profile_summary_section">Section %1$s</string>
+    <string name="profile_summary_lab">Lab group %1$s</string>
+    <string name="profile_error_required">This field is required</string>
+    <string name="profile_error_roll">The last %1$d characters of the roll number must be digits</string>
+    <string name="profile_error_digits">Enter a number from 1 to 6</string>
+    <string name="profile_error_year">Enter a year from 1 to 8</string>
+    <string name="profile_error_term">Enter a term from 1 to 4</string>
+    <string name="profile_button_advanced">Advanced: roll number format</string>
+    <string name="profile_group_hint">Section and lab group are filled from the roll number. Change them if your teacher moved you to another group.</string>
 
 </resources>

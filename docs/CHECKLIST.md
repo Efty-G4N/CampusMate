@@ -50,7 +50,7 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 - ✅ Resources screen (LinearLayout, implicit Intents: open link, share text)
 - ✅ Theme and colors (light and dark)
 - ✅ Hardcoded strings moved to strings.xml
-- ✅ Home counter state kept on rotation (onSaveInstanceState), waiting for phone test
+- ✅ Home counter state kept on rotation (onSaveInstanceState)
 
 ## Phase 2: Local data (SQLite)
 - ✅ Database design (tables and relationships)
@@ -65,4 +65,4 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 ## Phase 3: Main screens
 - ✅ Courses screen (RecyclerView, course cards, teacher short codes)
 - ✅ Course detail screen (course header, teachers with room, phone, email; workspace buttons)
-- ⬜ Profile screen (form, validation, auto-detect from roll number)
+- ✅ Profile screen (form, validation, auto-detect from roll number)
