@@ -31,6 +31,9 @@
         <activity
             android:name=".activities.TeacherDirectoryActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.ClassGroupsActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

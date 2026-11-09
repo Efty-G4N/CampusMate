@@ -251,6 +251,13 @@
             android:layout_marginTop="4dp"
             android:text="@string/profile_group_hint"
             android:textSize="13sp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonClassGroups"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/class_groups_button" />
 
         <!-- Advanced: roll number format (hidden until needed) -->
         <com.google.android.material.button.MaterialButton

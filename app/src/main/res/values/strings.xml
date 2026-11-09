@@ -107,5 +107,17 @@
     <string name="dialog_close">Close</string>
     <string name="courses_view_grid">Grid</string>
     <string name="courses_view_list">List</string>
+    <!-- Sections and lab groups -->
+    <string name="class_groups_title">Sections and lab groups</string>
+    <string name="class_groups_hint">Tap a group to see its students</string>
+    <string name="class_groups_empty">No sections or lab groups for this semester</string>
+    <string name="class_groups_button">Sections and lab groups</string>
+    <string name="class_group_section">Section %1$s · %2$s</string>
+    <string name="class_group_lab">Lab group %1$s · %2$s</string>
+    <string name="class_group_range">Roll %1$d–%2$d</string>
+    <string name="class_group_range_open">Roll %1$d and above</string>
+    <string name="class_group_yours">Your group</string>
+    <string name="class_group_students_title">%1$s · %2$d students</string>
+    <string name="class_group_no_students">No students found in this group</string>
 
 </resources>

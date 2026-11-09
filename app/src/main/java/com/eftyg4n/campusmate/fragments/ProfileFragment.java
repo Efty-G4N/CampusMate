@@ -1,5 +1,6 @@
 package com.eftyg4n.campusmate.fragments;
-
+import android.content.Intent;
+import com.eftyg4n.campusmate.activities.ClassGroupsActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -63,6 +64,8 @@ public class ProfileFragment extends Fragment {
         binding.buttonAdvanced.setOnClickListener(view ->
                 showAdvanced(binding.layoutSerialDigits.getVisibility() != View.VISIBLE));
         binding.buttonSave.setOnClickListener(view -> saveProfile());
+        binding.buttonClassGroups.setOnClickListener(view ->
+                startActivity(new Intent(requireContext(), ClassGroupsActivity.class)));
 
         loadProfile();
         return binding.getRoot();
