@@ -1,5 +1,6 @@
 package com.eftyg4n.campusmate.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,9 +9,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.eftyg4n.campusmate.R;
+import com.eftyg4n.campusmate.activities.CourseDetailActivity;
+import com.eftyg4n.campusmate.activities.TeacherDirectoryActivity;
 import com.eftyg4n.campusmate.adapters.CourseAdapter;
 import com.eftyg4n.campusmate.databinding.FragmentCoursesBinding;
 import com.eftyg4n.campusmate.models.Course;
@@ -25,13 +29,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.content.Intent;
-import com.eftyg4n.campusmate.activities.CourseDetailActivity;
-
 public class CoursesFragment extends Fragment {
+
+    private static final String KEY_GRID_MODE = "key_grid_mode";
+    private static final int GRID_COLUMNS = 2;
 
     private FragmentCoursesBinding binding;
     private CourseAdapter adapter;
+    private boolean gridMode = false;
 
     @Nullable
     @Override
@@ -40,16 +45,39 @@ public class CoursesFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentCoursesBinding.inflate(inflater, container, false);
 
+        if (savedInstanceState != null) {
+            gridMode = savedInstanceState.getBoolean(KEY_GRID_MODE, false);
+        }
+
         adapter = new CourseAdapter(requireContext(), course -> {
             Intent intent = new Intent(requireContext(), CourseDetailActivity.class);
             intent.putExtra(CourseDetailActivity.EXTRA_COURSE_ID, course.getId());
             startActivity(intent);
         });
 
-        binding.recyclerCourses.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.recyclerCourses.setAdapter(adapter);
+        applyLayoutManager();
+
+        binding.buttonViewMode.setOnClickListener(view -> {
+            gridMode = !gridMode;
+            applyLayoutManager();
+        });
+        binding.buttonTeachers.setOnClickListener(view ->
+                startActivity(new Intent(requireContext(), TeacherDirectoryActivity.class)));
 
         return binding.getRoot();
+    }
+
+    // The LayoutManager decides how the rows are arranged: one column or a grid.
+    private void applyLayoutManager() {
+        if (gridMode) {
+            binding.recyclerCourses.setLayoutManager(
+                    new GridLayoutManager(requireContext(), GRID_COLUMNS));
+            binding.buttonViewMode.setText(R.string.courses_view_list);
+        } else {
+            binding.recyclerCourses.setLayoutManager(new LinearLayoutManager(requireContext()));
+            binding.buttonViewMode.setText(R.string.courses_view_grid);
+        }
     }
 
     // Reload every time the screen becomes visible, so changes are always shown.
@@ -97,6 +125,12 @@ public class CoursesFragment extends Fragment {
     private void showEmpty(boolean empty) {
         binding.textEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
         binding.recyclerCourses.setVisibility(empty ? View.GONE : View.VISIBLE);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_GRID_MODE, gridMode);
     }
 
     @Override

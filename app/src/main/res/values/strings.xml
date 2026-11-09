@@ -96,5 +96,16 @@
     <string name="profile_error_term">Enter a term from 1 to 4</string>
     <string name="profile_button_advanced">Advanced: roll number format</string>
     <string name="profile_group_hint">Section and lab group are filled from the roll number. Change them if your teacher moved you to another group.</string>
+    <!-- Teacher directory -->
+    <string name="teachers_directory_title">Teacher directory</string>
+    <string name="teachers_search_hint">Search by name or short code</string>
+    <string name="teachers_empty">No teacher found</string>
+    <string name="teachers_count">%1$d teachers</string>
+    <string name="teachers_button">Teacher directory</string>
+    <string name="teacher_row_courses">Courses: %1$s</string>
+    <string name="teacher_row_no_courses">No course assigned</string>
+    <string name="dialog_close">Close</string>
+    <string name="courses_view_grid">Grid</string>
+    <string name="courses_view_list">List</string>
 
 </resources>

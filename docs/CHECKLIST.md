@@ -17,9 +17,9 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 
 ## Lecture 9
 - ⬜ ListView + ArrayAdapter + item click
-- ⬜ Custom ListView (row XML, custom adapter, getView, LayoutInflater)
+- ✅ Custom ListView (row XML, custom adapter, getView, LayoutInflater)
 - ✅ RecyclerView (adapter, ViewHolder, onCreateViewHolder, onBindViewHolder, getItemCount)
-- 🟩 LayoutManager
+- ✅ LayoutManager
 - ✅ View recycling
 
 ## Lecture 10
@@ -66,3 +66,5 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 - ✅ Courses screen (RecyclerView, course cards, teacher short codes)
 - ✅ Course detail screen (course header, teachers with room, phone, email; workspace buttons)
 - ✅ Profile screen (form, validation, auto-detect from roll number)
+- ✅ Teacher directory (custom ListView, search, contact dialog)
+- ✅ Courses list/grid switch (LinearLayoutManager and GridLayoutManager)

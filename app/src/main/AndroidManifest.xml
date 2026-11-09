@@ -28,6 +28,9 @@
         <activity
             android:name=".activities.CourseDetailActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.TeacherDirectoryActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

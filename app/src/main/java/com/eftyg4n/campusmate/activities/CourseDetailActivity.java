@@ -1,12 +1,8 @@
 package com.eftyg4n.campusmate.activities;
 
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +18,7 @@ import com.eftyg4n.campusmate.models.Course;
 import com.eftyg4n.campusmate.models.Teacher;
 import com.eftyg4n.campusmate.repositories.CourseRepository;
 import com.eftyg4n.campusmate.repositories.TeacherRepository;
+import com.eftyg4n.campusmate.utils.TeacherCardBinder;
 
 import java.util.List;
 
@@ -85,49 +82,9 @@ public class CourseDetailActivity extends AppCompatActivity {
         for (Teacher teacher : teachers) {
             ItemTeacherBinding row = ItemTeacherBinding.inflate(
                     getLayoutInflater(), binding.layoutTeachers, false);
-            bindTeacher(row, teacher);
+            TeacherCardBinder.bind(this, row, teacher);
             binding.layoutTeachers.addView(row.getRoot());
         }
-    }
-
-    private void bindTeacher(ItemTeacherBinding row, Teacher teacher) {
-        row.textTeacherName.setText(teacher.getName());
-
-        StringBuilder role = new StringBuilder();
-        appendPart(role, teacher.getShortCode());
-        appendPart(role, teacher.getDesignation());
-        appendPart(role, teacher.getDepartment());
-        row.textTeacherRole.setText(role.toString());
-
-        StringBuilder place = new StringBuilder();
-        if (hasText(teacher.getRoomNo())) {
-            appendPart(place, getString(R.string.teacher_room, teacher.getRoomNo()));
-        }
-        if (hasText(teacher.getExtension())) {
-            appendPart(place, getString(R.string.teacher_ext, teacher.getExtension()));
-        }
-        boolean hasPlace = showText(row.textTeacherRoom, place.toString());
-
-        final String phone = teacher.getPhone();
-        boolean hasPhone = showText(row.textTeacherPhone,
-                hasText(phone) ? getString(R.string.teacher_phone, phone) : null);
-        if (hasPhone) {
-            // Implicit Intent: open the dialer with this number (does not call).
-            row.textTeacherPhone.setOnClickListener(view -> openIntent(
-                    new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Uri.encode(phone)))));
-        }
-
-        final String email = teacher.getEmail();
-        boolean hasEmail = showText(row.textTeacherEmail,
-                hasText(email) ? getString(R.string.teacher_email, email) : null);
-        if (hasEmail) {
-            // Implicit Intent: open an email app with this address.
-            row.textTeacherEmail.setOnClickListener(view -> openIntent(
-                    new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + email))));
-        }
-
-        boolean noInfo = !hasPlace && !hasPhone && !hasEmail;
-        row.textTeacherNoInfo.setVisibility(noInfo ? View.VISIBLE : View.GONE);
     }
 
     private void setupWorkspaceButtons() {
@@ -142,14 +99,6 @@ public class CourseDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void openIntent(Intent intent) {
-        try {
-            startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, R.string.common_no_app, Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private String typeLabel(String type) {
         if (Course.TYPE_LAB.equals(type)) {
             return getString(R.string.course_type_lab);
@@ -158,30 +107,5 @@ public class CourseDetailActivity extends AppCompatActivity {
             return getString(R.string.course_type_custom);
         }
         return getString(R.string.course_type_theory);
-    }
-
-    private boolean hasText(String text) {
-        return text != null && !text.trim().isEmpty();
-    }
-
-    // Shows the text and returns true, or hides the view and returns false if it is empty.
-    private boolean showText(TextView view, String text) {
-        if (hasText(text)) {
-            view.setText(text);
-            view.setVisibility(View.VISIBLE);
-            return true;
-        }
-        view.setVisibility(View.GONE);
-        return false;
-    }
-
-    // Adds "part" to the text, with " · " between parts.
-    private void appendPart(StringBuilder builder, String part) {
-        if (hasText(part)) {
-            if (builder.length() > 0) {
-                builder.append(" · ");
-            }
-            builder.append(part);
-        }
     }
 }
