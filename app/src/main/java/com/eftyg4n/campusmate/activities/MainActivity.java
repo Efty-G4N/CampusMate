@@ -18,20 +18,6 @@ import com.eftyg4n.campusmate.fragments.ProfileFragment;
 import com.eftyg4n.campusmate.fragments.ResourcesFragment;
 import com.eftyg4n.campusmate.fragments.ScheduleFragment;
 
-import com.eftyg4n.campusmate.models.Course;
-import com.eftyg4n.campusmate.models.Semester;
-import com.eftyg4n.campusmate.repositories.CourseRepository;
-import com.eftyg4n.campusmate.repositories.SemesterRepository;
-import com.eftyg4n.campusmate.database.KuetSeedData;
-import com.eftyg4n.campusmate.models.Teacher;
-import com.eftyg4n.campusmate.repositories.TeacherRepository;
-import com.eftyg4n.campusmate.models.ClassGroup;
-import com.eftyg4n.campusmate.models.Classmate;
-import com.eftyg4n.campusmate.models.UserProfile;
-import com.eftyg4n.campusmate.repositories.ClassGroupRepository;
-import com.eftyg4n.campusmate.repositories.ClassmateRepository;
-import com.eftyg4n.campusmate.repositories.UserProfileRepository;
-import com.eftyg4n.campusmate.utils.RollUtils;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "CampusMate_Lifecycle";
@@ -46,67 +32,6 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        // TEMPORARY: class structure and profile test (remove after Phase 2 testing)
-        String dbTag = "CampusMate_DB";
-        KuetSeedData.seedIfEmpty(this);
-        KuetSeedData.seedClassData(this);
-
-        SemesterRepository semesterRepo = new SemesterRepository(this);
-        ClassGroupRepository groupRepo = new ClassGroupRepository(this);
-        ClassmateRepository classmateRepo = new ClassmateRepository(this);
-        UserProfileRepository profileRepo = new UserProfileRepository(this);
-
-        Log.d(dbTag, "Classmates loaded: " + classmateRepo.count());
-
-        Semester current = semesterRepo.getCurrent();
-        if (current != null) {
-            for (ClassGroup group : groupRepo.getBySemester(current.getId())) {
-                Log.d(dbTag, group.getType() + " " + group.getName() + ": "
-                        + group.getRollFrom() + "-" + group.getRollTo());
-            }
-
-            int digits = 3;
-            String myRoll = "2307100";
-            int serial = RollUtils.serialOf(myRoll, digits);
-            ClassGroup section = groupRepo.findSection(current.getId(), serial);
-            ClassGroup labGroup = groupRepo.findLabGroup(current.getId(), serial);
-            Classmate me = classmateRepo.getByRoll(myRoll);
-            Log.d(dbTag, "Roll " + myRoll + " serial " + serial + " -> "
-                    + (me != null ? me.getFullName() : "not in list")
-                    + " | section " + (section != null ? section.getName() : "?")
-                    + " | lab group " + (labGroup != null ? labGroup.getName() : "?"));
-
-            int[] samples = {1, 30, 31, 60, 61, 90, 91, 123};
-            for (int i = 0; i < samples.length; i++) {
-                ClassGroup s = groupRepo.findSection(current.getId(), samples[i]);
-                ClassGroup l = groupRepo.findLabGroup(current.getId(), samples[i]);
-                Log.d(dbTag, "Serial " + samples[i] + " -> "
-                        + (s != null ? s.getName() : "?") + " / "
-                        + (l != null ? l.getName() : "?"));
-            }
-
-            if (profileRepo.getProfile() == null && me != null) {
-                UserProfile profile = new UserProfile();
-                profile.setName(me.getFullName());
-                profile.setUniversity("Khulna University of Engineering & Technology (KUET)");
-                profile.setDepartment("Computer Science and Engineering");
-                profile.setSession(current.getSession());
-                profile.setYearNo(current.getYearNo());
-                profile.setTermNo(current.getTermNo());
-                profile.setRollNo(myRoll);
-                profile.setRollSerialDigits(digits);
-                profile.setSection(section != null ? section.getName() : null);
-                profile.setLabGroup(labGroup != null ? labGroup.getName() : null);
-                Log.d(dbTag, "Profile saved: " + profileRepo.save(profile));
-            }
-
-            UserProfile saved = profileRepo.getProfile();
-            if (saved != null) {
-                Log.d(dbTag, "Profile: " + saved.getName() + " | " + saved.getRollNo()
-                        + " | " + saved.getSection() + " | " + saved.getLabGroup());
-            }
-        }
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
