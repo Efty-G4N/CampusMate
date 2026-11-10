@@ -16,6 +16,7 @@ public class CampusMateApp extends Application {
         // First-run data: runs only when the tables are empty (idempotent)
         boolean seeded = KuetSeedData.seedIfEmpty(this);
         KuetSeedData.seedClassData(this);
+        KuetSeedData.seedRoutineData(this);
         Log.d(TAG, "App start: semester data seeded now = " + seeded);
     }
 }

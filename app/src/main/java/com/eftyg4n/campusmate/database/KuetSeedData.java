@@ -22,6 +22,11 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import com.eftyg4n.campusmate.models.Routine;
+import com.eftyg4n.campusmate.repositories.CourseRepository;
+import com.eftyg4n.campusmate.repositories.RoutineRepository;
+import java.util.HashMap;
+import java.util.Map;
 
 // Sample data: KUET CSE, 2nd Year 2nd Term, Session 2024-2025.
 // Inserted only once, when the database has no semester yet.
@@ -110,6 +115,45 @@ public class KuetSeedData {
             {"A2", ClassGroup.TYPE_LAB_GROUP, "A", "31", "60"},
             {"B1", ClassGroup.TYPE_LAB_GROUP, "B", "61", "90"},
             {"B2", ClassGroup.TYPE_LAB_GROUP, "B", "91", "999"}
+    };
+    // Period times in minutes after midnight. Index = period number (1..9).
+    // 08:00, 08:50, 09:40, (break) 10:40, 11:30, 12:20, (break) 14:30, 15:20, 16:10 ... 17:00
+    private static final int[] PERIOD_START = {0, 480, 530, 580, 640, 690, 740, 870, 920, 970};
+    private static final int[] PERIOD_END = {0, 530, 580, 630, 690, 740, 790, 920, 970, 1020};
+
+    private static final String NOTE_C = "Marked with 'c' in the routine (meaning not confirmed)";
+
+    // Section B (from 2-2_Routine.jpg).
+    // day (0 = Sunday), first period, last period, course code, class type,
+    // lab group (null = whole section), teacher codes, room, note
+    private static final String[][] ROUTINE_SECTION_B = {
+            // Sunday
+            {"0", "2", "2", "CSE 2209", Routine.TYPE_THEORY, null, "DD", "B-105", null},
+            {"0", "3", "3", "MATH 2207", Routine.TYPE_THEORY, null, "ARJ", "B-105", null},
+            {"0", "4", "4", "HUM 2207", Routine.TYPE_THEORY, null, "RA/FA", "B-105", NOTE_C},
+            // Monday
+            {"1", "1", "1", "CSE 2201", Routine.TYPE_THEORY, null, "SH/MAN", "B-105", NOTE_C},
+            {"1", "2", "2", "ECE 2213", Routine.TYPE_THEORY, null, "FRH/FH", "B-105", null},
+            {"1", "3", "3", "MATH 2207", Routine.TYPE_THEORY, null, "HZ", "B-105", null},
+            {"1", "4", "6", "CSE 2202", Routine.TYPE_LAB, "B1", "SN+MAN", "CSE-305", null},
+            {"1", "7", "9", "ECE 2214", Routine.TYPE_LAB, "B2", "MRM+MIA", "ECE-104", null},
+            // Tuesday
+            {"2", "1", "1", "CSE 2209", Routine.TYPE_THEORY, null, "NS", "B-105", null},
+            {"2", "2", "2", "HUM 2207", Routine.TYPE_THEORY, null, "RA", "B-105", null},
+            {"2", "3", "3", "ECE 2213", Routine.TYPE_THEORY, null, "FRH", "B-105", null},
+            {"2", "4", "6", "CSE 2208", Routine.TYPE_LAB, "B1", "MI+LBM", "CSE-103", null},
+            {"2", "4", "6", "CSE 2202", Routine.TYPE_LAB, "B2", "SN+MAN", "CSE-305", null},
+            // Wednesday
+            {"3", "1", "3", "ECE 2214", Routine.TYPE_LAB, "B1", "MRM+MIA", "ECE-104", null},
+            {"3", "4", "4", "MATH 2207", Routine.TYPE_THEORY, null, "ARJ/HZ", "B-105", null},
+            {"3", "5", "5", "CSE 2201", Routine.TYPE_THEORY, null, "SH", "B-105", null},
+            {"3", "7", "9", "CSE 2200", Routine.TYPE_LAB, "B2", "SA+EK", "CSE-202", null},
+            // Thursday
+            {"4", "1", "3", "CSE 2208", Routine.TYPE_LAB, "B2", "MI+LBM", "CSE-103", null},
+            {"4", "1", "3", "CSE 2200", Routine.TYPE_LAB, "B1", "SA+EK", "CSE-202", null},
+            {"4", "4", "4", "HUM 2207", Routine.TYPE_THEORY, null, "FA", "B-105", null},
+            {"4", "5", "5", "ECE 2213", Routine.TYPE_THEORY, null, "FRH", "B-105", null},
+            {"4", "6", "6", "CSE 2201", Routine.TYPE_THEORY, null, "MAN", "B-105", null}
     };
 
     private KuetSeedData() {
@@ -229,6 +273,74 @@ public class KuetSeedData {
         if (classmateRepo.count() == 0) {
             classmateRepo.insertAll(readStudentsFromAssets(context));
         }
+    }
+    // Adds the Section B weekly routine to the current semester.
+    // Inserted only if the routine table is still empty, so it is safe to call every time.
+    public static void seedRoutineData(Context context) {
+        Semester current = new SemesterRepository(context).getCurrent();
+        if (current == null) {
+            return;
+        }
+
+        RoutineRepository routineRepo = new RoutineRepository(context);
+        if (routineRepo.count(current.getId()) > 0) {
+            return;
+        }
+
+        // course code -> course id, so each routine row can point to its course
+        Map<String, String> courseIds = new HashMap<>();
+        List<Course> courses = new CourseRepository(context).getBySemester(current.getId());
+        for (int i = 0; i < courses.size(); i++) {
+            courseIds.put(courses.get(i).getCode(), courses.get(i).getId());
+        }
+
+        SQLiteDatabase db = DatabaseHelper.getInstance(context).getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (int i = 0; i < ROUTINE_SECTION_B.length; i++) {
+                String[] row = ROUTINE_SECTION_B[i];
+                String courseId = courseIds.get(row[3]);
+                if (courseId == null) {
+                    Log.e("CampusMate_DB", "Routine: course not found " + row[3]);
+                    return;
+                }
+
+                int firstPeriod = Integer.parseInt(row[1]);
+                int lastPeriod = Integer.parseInt(row[2]);
+
+                Routine routine = new Routine();
+                routine.setSemesterId(current.getId());
+                routine.setCourseId(courseId);
+                routine.setDayOfWeek(Integer.parseInt(row[0]));
+                routine.setStartPeriod(firstPeriod);
+                routine.setEndPeriod(lastPeriod);
+                routine.setStartMinute(PERIOD_START[firstPeriod]);
+                routine.setEndMinute(PERIOD_END[lastPeriod]);
+                routine.setClassType(row[4]);
+                routine.setSection("B");
+                routine.setLabGroup(row[5]);
+                routine.setTeacherCodes(row[6]);
+                routine.setRoom(row[7]);
+                routine.setNote(row[8]);
+                if (routineRepo.insert(routine) == null) {
+                    return;
+                }
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+
+        // Check: classes per day (Sun..Thu) for Section B / lab group B2
+        StringBuilder perDay = new StringBuilder();
+        for (int day = 0; day <= 4; day++) {
+            perDay.append(routineRepo.getForDay(current.getId(), "B", "B2", day).size());
+            if (day < 4) {
+                perDay.append(",");
+            }
+        }
+        Log.d("CampusMate_DB", "Routine seeded: " + routineRepo.count(current.getId())
+                + " rows; B/B2 per day (Sun..Thu) = " + perDay);
     }
 
     // Reads assets/kuet_cse_2023_students.csv (header: roll_no,full_name).

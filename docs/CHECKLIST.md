@@ -61,6 +61,8 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 - ✅ Customizable sections and lab groups (class_group, roll serial ranges)
 - ✅ Classmate list loaded from assets CSV
 - ✅ UserProfile model and repository (roll number, section, lab group)
+- ✅ Routine table (DB version 4), Routine model and RoutineRepository (JOIN with course, filter by section and lab group)
+- ✅ Section B weekly routine seed (22 slots; B2 view shows 18)
 
 ## Phase 3: Main screens
 - ✅ Courses screen (RecyclerView, course cards, teacher short codes)

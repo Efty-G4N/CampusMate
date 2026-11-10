@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "campusmate.db";
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
 
     // ---------- Sync status values ----------
     public static final int SYNC_PENDING = 0;
@@ -86,6 +86,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_CLASSMATE = "classmate";
     public static final String COL_CLASSMATE_ROLL_NO = "roll_no";
     public static final String COL_CLASSMATE_FULL_NAME = "full_name";
+    // ---------- Table: routine (weekly class slots) ----------
+    public static final String TABLE_ROUTINE = "routine";
+    public static final String COL_ROUTINE_SEMESTER_ID = "semester_id";
+    public static final String COL_ROUTINE_COURSE_ID = "course_id";
+    public static final String COL_ROUTINE_DAY = "day_of_week";
+    public static final String COL_ROUTINE_START_PERIOD = "start_period";
+    public static final String COL_ROUTINE_END_PERIOD = "end_period";
+    public static final String COL_ROUTINE_START_MINUTE = "start_minute";
+    public static final String COL_ROUTINE_END_MINUTE = "end_minute";
+    public static final String COL_ROUTINE_ROOM = "room";
+    public static final String COL_ROUTINE_CLASS_TYPE = "class_type";
+    public static final String COL_ROUTINE_SECTION = "section";
+    public static final String COL_ROUTINE_LAB_GROUP = "lab_group";
+    public static final String COL_ROUTINE_TEACHER_CODES = "teacher_codes";
+    public static final String COL_ROUTINE_STATUS = "status";
+    public static final String COL_ROUTINE_NOTE = "note";
 
     private static DatabaseHelper instance;
 
@@ -187,6 +203,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + TABLE_TEACHER + "(" + COL_ID + ") ON DELETE CASCADE)");
         createClassGroupTable(db);
         createClassmateTable(db);
+        createRoutineTable(db);
+    }
+    private void createRoutineTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + TABLE_ROUTINE + " ("
+                + COL_ID + " TEXT PRIMARY KEY, "
+                + COL_OWNER_UID + " TEXT, "
+                + COL_ROUTINE_SEMESTER_ID + " TEXT NOT NULL, "
+                + COL_ROUTINE_COURSE_ID + " TEXT NOT NULL, "
+                + COL_ROUTINE_DAY + " INTEGER NOT NULL, "
+                + COL_ROUTINE_START_PERIOD + " INTEGER NOT NULL, "
+                + COL_ROUTINE_END_PERIOD + " INTEGER NOT NULL, "
+                + COL_ROUTINE_START_MINUTE + " INTEGER NOT NULL, "
+                + COL_ROUTINE_END_MINUTE + " INTEGER NOT NULL, "
+                + COL_ROUTINE_ROOM + " TEXT, "
+                + COL_ROUTINE_CLASS_TYPE + " TEXT NOT NULL DEFAULT 'THEORY', "
+                + COL_ROUTINE_SECTION + " TEXT, "
+                + COL_ROUTINE_LAB_GROUP + " TEXT, "
+                + COL_ROUTINE_TEACHER_CODES + " TEXT, "
+                + COL_ROUTINE_STATUS + " TEXT NOT NULL DEFAULT 'NORMAL', "
+                + COL_ROUTINE_NOTE + " TEXT, "
+                + COL_CREATED_AT + " INTEGER NOT NULL, "
+                + COL_UPDATED_AT + " INTEGER NOT NULL, "
+                + COL_SYNC_STATUS + " INTEGER NOT NULL DEFAULT 0, "
+                + "FOREIGN KEY (" + COL_ROUTINE_SEMESTER_ID + ") REFERENCES "
+                + TABLE_SEMESTER + "(" + COL_ID + ") ON DELETE CASCADE, "
+                + "FOREIGN KEY (" + COL_ROUTINE_COURSE_ID + ") REFERENCES "
+                + TABLE_COURSE + "(" + COL_ID + ") ON DELETE CASCADE)");
     }
     private void createClassGroupTable(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_CLASS_GROUP + " ("
@@ -240,6 +283,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + COL_PROFILE_SERIAL_DIGITS + " INTEGER NOT NULL DEFAULT 3");
             createClassGroupTable(db);
             createClassmateTable(db);
+        }
+        // Version 3 -> 4: weekly routine table.
+        if (oldVersion < 4) {
+            createRoutineTable(db);
         }
     }
 }
