@@ -201,5 +201,83 @@
     <string name="system_toast_airplane_off">Airplane mode turned off</string>
     <string name="system_toast_power_on">Battery Saver turned on</string>
     <string name="system_toast_power_off">Battery Saver turned off</string>
+    <!-- ===== Stage 4: Deadlines, reminders, notifications, permission ===== -->
+    <string name="deadlines_title">Deadlines</string>
+    <string name="deadlines_title_course">%1$s · Deadlines</string>
+    <string name="deadlines_empty">No deadlines here yet</string>
+    <string name="deadline_add">Add deadline</string>
+    <string name="deadline_filter_all">All</string>
+    <string name="deadline_filter_pending">Pending</string>
+    <string name="deadline_filter_overdue">Overdue</string>
+    <string name="deadline_filter_completed">Completed</string>
+    <string name="deadline_no_course_short">General</string>
+    <string name="deadline_meta">%1$s · %2$s · %3$s priority</string>
+    <string name="deadline_due">Due: %1$s</string>
+    <string name="deadline_status_overdue">Overdue</string>
+    <string name="deadline_status_completed">Completed</string>
+    <string name="deadline_not_found">Deadline not found</string>
+
+    <string name="deadline_form_title_add">New deadline</string>
+    <string name="deadline_form_title_edit">Edit deadline</string>
+    <string name="deadline_form_title_hint">Title</string>
+    <string name="deadline_form_course_hint">Course</string>
+    <string name="deadline_form_type_hint">Type</string>
+    <string name="deadline_form_priority_hint">Priority</string>
+    <string name="deadline_form_due_label">Due date and time</string>
+    <string name="deadline_form_remind_label">Remind me</string>
+    <string name="deadline_form_description_hint">Description (optional)</string>
+    <string name="deadline_form_save">Save</string>
+    <string name="deadline_form_delete">Delete deadline</string>
+    <string name="deadline_form_error_title">Enter a title</string>
+    <string name="deadline_form_saved">Deadline saved</string>
+    <string name="deadline_form_deleted">Deadline deleted</string>
+    <string name="deadline_form_save_failed">Could not save the deadline</string>
+    <string name="deadline_no_course">No course (general task)</string>
+    <string name="deadline_pick_date">Select due date</string>
+    <string name="deadline_pick_time">Select due time</string>
+    <string name="deadline_remind_at_due">At due time</string>
+    <string name="deadline_remind_10m">10 min before</string>
+    <string name="deadline_remind_1h">1 hour before</string>
+    <string name="deadline_remind_1d">1 day before</string>
+    <string name="deadline_delete_title">Delete this deadline?</string>
+    <string name="deadline_delete_message">%1$s and its reminders will be deleted.</string>
+
+    <string name="deadline_card_title">Deadlines</string>
+    <string name="deadline_card_summary">%1$d pending</string>
+    <string name="deadline_card_none">No pending deadlines</string>
+    <string name="deadline_card_line">• %1$s — %2$s</string>
+    <string name="deadline_card_open">View all</string>
+    <string name="home_no_semester">No current semester selected</string>
+
+    <string-array name="deadline_type_labels">
+        <item>Assignment</item>
+        <item>Quiz</item>
+        <item>CT</item>
+        <item>Project</item>
+        <item>Lab submission</item>
+        <item>Presentation</item>
+        <item>Final exam</item>
+        <item>Practical exam</item>
+        <item>Custom</item>
+    </string-array>
+    <string-array name="deadline_priority_labels">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
+
+    <!-- Notifications and permission -->
+    <string name="notif_channel_deadlines_name">Deadline reminders</string>
+    <string name="notif_channel_deadlines_desc">Reminders for assignments, quizzes, CTs, projects and exams</string>
+    <string name="notif_deadline_text">Due %1$s</string>
+    <string name="perm_notifications_title">Allow notifications?</string>
+    <string name="perm_notifications_message">CampusMate needs the notification permission only to remind you before your deadlines. Nothing else is sent.</string>
+    <string name="perm_allow">Allow</string>
+    <string name="perm_not_now">Not now</string>
+    <string name="perm_notifications_denied_title">Reminders will not appear</string>
+    <string name="perm_notifications_denied_message">Notifications are turned off for CampusMate, so your reminders cannot be shown. You can turn them on in Settings. The deadline itself will still be saved.</string>
+    <string name="perm_open_settings">Open Settings</string>
+    <string name="perm_continue_without">Save without reminders</string>
+
 
 </resources>

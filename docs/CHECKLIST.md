@@ -24,12 +24,12 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 
 ## Lecture 10
 - ⬜ Service (foreground, notification, progress)
-- ⬜ WorkManager
+- ✅ WorkManager
 - ✅ BroadcastReceiver: Airplane mode (context-registered in HomeFragment onStart/onStop, status card)
 - ✅ BroadcastReceiver: Battery Saver (ACTION_POWER_SAVE_MODE_CHANGED, status card)
 - ⬜ Image picker and document picker (content URI)
-- ⬜ Notifications (channels, tap navigation)
-- ⬜ Runtime permissions
+- ✅ Notifications (channels, tap navigation)
+- ✅ Runtime permissions
 
 ## Lecture 11
 - ⬜ Firebase Authentication (register, login, logout, reset)
@@ -75,3 +75,10 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 - ✅ Schedule screen (RecyclerView with two view types: day header and class card; daily/weekly toggle; next class card; filtered by section and lab group)
 - ✅ Course add / edit / delete (form validation, type dropdown with ArrayAdapter, color swatches, duplicate code check, delete confirm dialog, ActivityResult for delete)
 - ✅ Home system status card (live Airplane mode and Battery Saver state)
+
+## Phase 4: Deadlines and reminders
+- ✅ Deadline and Reminder tables (DB version 5), models, DeadlineRepository (transaction, JOIN, filters)
+- ✅ Deadlines screen (RecyclerView, filter chips, complete checkbox, course-filtered view)
+- ✅ Add / edit / delete deadline (Material date and time pickers, multiple reminders, validation)
+- ✅ Reminder scheduling with WorkManager + notification with tap navigation
+- ✅ Home deadline card

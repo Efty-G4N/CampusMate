@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.eftyg4n.campusmate.database.KuetSeedData;
+import com.eftyg4n.campusmate.notifications.NotificationHelper;
 
 public class CampusMateApp extends Application {
 
@@ -12,6 +13,9 @@ public class CampusMateApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // Notification channels must exist before the first notification is shown.
+        NotificationHelper.createChannels(this);
 
         // First-run data: runs only when the tables are empty (idempotent)
         boolean seeded = KuetSeedData.seedIfEmpty(this);

@@ -124,13 +124,19 @@ public class CourseDetailActivity extends AppCompatActivity {
     private void setupWorkspaceButtons() {
         Button[] buttons = {
                 binding.buttonAttendance, binding.buttonMarks, binding.buttonSyllabus,
-                binding.buttonLectures, binding.buttonResources, binding.buttonDeadlines,
-                binding.buttonNotices
+                binding.buttonLectures, binding.buttonResources, binding.buttonNotices
         };
         for (int i = 0; i < buttons.length; i++) {
             buttons[i].setOnClickListener(view -> Toast.makeText(this,
                     R.string.workspace_coming_soon, Toast.LENGTH_SHORT).show());
         }
+
+        // Deadlines is real now: open the list filtered to THIS course.
+        binding.buttonDeadlines.setOnClickListener(view -> {
+            Intent intent = new Intent(this, DeadlinesActivity.class);
+            intent.putExtra(DeadlinesActivity.EXTRA_COURSE_ID, courseId);
+            startActivity(intent);
+        });
     }
 
     private String typeLabel(String type) {

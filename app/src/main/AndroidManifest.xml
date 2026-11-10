@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Android 13+: asked at runtime, only when the student saves a deadline with reminders -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application
         android:name=".CampusMateApp"
         android:allowBackup="true"
@@ -37,6 +39,14 @@
             android:exported="false" />
         <activity
             android:name=".activities.AddEditCourseActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.DeadlinesActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:name=".activities.AddEditDeadlineActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
     </application>

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "campusmate.db";
-    private static final int DB_VERSION = 4;
+    private static final int DB_VERSION = 5;
 
     // ---------- Sync status values ----------
     public static final int SYNC_PENDING = 0;
@@ -103,7 +103,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_ROUTINE_STATUS = "status";
     public static final String COL_ROUTINE_NOTE = "note";
 
+    // ---------- Table: deadline (assignments, quizzes, CTs, projects, exams ...) ----------
+    public static final String TABLE_DEADLINE = "deadline";
+    public static final String COL_DEADLINE_SEMESTER_ID = "semester_id";
+    public static final String COL_DEADLINE_COURSE_ID = "course_id";
+    public static final String COL_DEADLINE_TITLE = "title";
+    public static final String COL_DEADLINE_DESCRIPTION = "description";
+    public static final String COL_DEADLINE_TYPE = "type";
+    public static final String COL_DEADLINE_DUE_AT = "due_at";
+    public static final String COL_DEADLINE_PRIORITY = "priority";
+    public static final String COL_DEADLINE_STATUS = "status";
+    public static final String COL_DEADLINE_COMPLETED_AT = "completed_at";
+
+    // ---------- Table: reminder (many reminders for one deadline) ----------
+    public static final String TABLE_REMINDER = "reminder";
+    public static final String COL_REMINDER_DEADLINE_ID = "deadline_id";
+    public static final String COL_REMINDER_MINUTES_BEFORE = "minutes_before";
     private static DatabaseHelper instance;
+
 
     public static synchronized DatabaseHelper getInstance(Context context) {
         if (instance == null) {
@@ -202,8 +219,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + "FOREIGN KEY (" + COL_CT_TEACHER_ID + ") REFERENCES "
                 + TABLE_TEACHER + "(" + COL_ID + ") ON DELETE CASCADE)");
         createClassGroupTable(db);
-        createClassmateTable(db);
         createRoutineTable(db);
+        createDeadlineTable(db);
+        createReminderTable(db);
+    }
+
+    private void createDeadlineTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + TABLE_DEADLINE + " ("
+                + COL_ID + " TEXT PRIMARY KEY, "
+                + COL_OWNER_UID + " TEXT, "
+                + COL_DEADLINE_SEMESTER_ID + " TEXT NOT NULL, "
+                + COL_DEADLINE_COURSE_ID + " TEXT, "
+                + COL_DEADLINE_TITLE + " TEXT NOT NULL, "
+                + COL_DEADLINE_DESCRIPTION + " TEXT, "
+                + COL_DEADLINE_TYPE + " TEXT NOT NULL DEFAULT 'ASSIGNMENT', "
+                + COL_DEADLINE_DUE_AT + " INTEGER NOT NULL, "
+                + COL_DEADLINE_PRIORITY + " INTEGER NOT NULL DEFAULT 1, "
+                + COL_DEADLINE_STATUS + " TEXT NOT NULL DEFAULT 'PENDING', "
+                + COL_DEADLINE_COMPLETED_AT + " INTEGER, "
+                + COL_CREATED_AT + " INTEGER NOT NULL, "
+                + COL_UPDATED_AT + " INTEGER NOT NULL, "
+                + COL_SYNC_STATUS + " INTEGER NOT NULL DEFAULT 0, "
+                + "FOREIGN KEY (" + COL_DEADLINE_SEMESTER_ID + ") REFERENCES "
+                + TABLE_SEMESTER + "(" + COL_ID + ") ON DELETE CASCADE, "
+                + "FOREIGN KEY (" + COL_DEADLINE_COURSE_ID + ") REFERENCES "
+                + TABLE_COURSE + "(" + COL_ID + ") ON DELETE CASCADE)");
+    }
+
+    private void createReminderTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + TABLE_REMINDER + " ("
+                + COL_ID + " TEXT PRIMARY KEY, "
+                + COL_OWNER_UID + " TEXT, "
+                + COL_REMINDER_DEADLINE_ID + " TEXT NOT NULL, "
+                + COL_REMINDER_MINUTES_BEFORE + " INTEGER NOT NULL, "
+                + COL_CREATED_AT + " INTEGER NOT NULL, "
+                + COL_UPDATED_AT + " INTEGER NOT NULL, "
+                + COL_SYNC_STATUS + " INTEGER NOT NULL DEFAULT 0, "
+                + "UNIQUE (" + COL_REMINDER_DEADLINE_ID + ", "
+                + COL_REMINDER_MINUTES_BEFORE + "), "
+                + "FOREIGN KEY (" + COL_REMINDER_DEADLINE_ID + ") REFERENCES "
+                + TABLE_DEADLINE + "(" + COL_ID + ") ON DELETE CASCADE)");
     }
     private void createRoutineTable(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_ROUTINE + " ("
@@ -287,6 +342,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Version 3 -> 4: weekly routine table.
         if (oldVersion < 4) {
             createRoutineTable(db);
+        }
+        // Version 4 -> 5: deadlines and their reminders.
+        if (oldVersion < 5) {
+            createDeadlineTable(db);
+            createReminderTable(db);
         }
     }
 }
