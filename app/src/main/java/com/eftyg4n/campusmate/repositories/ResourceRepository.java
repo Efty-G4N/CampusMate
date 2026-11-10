@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.eftyg4n.campusmate.database.DatabaseHelper;
+import com.eftyg4n.campusmate.firebase.SyncManager;
 import com.eftyg4n.campusmate.models.Resource;
 import com.eftyg4n.campusmate.utils.IdUtils;
 
@@ -26,8 +27,10 @@ public class ResourceRepository {
                     + " = r." + COL_RESOURCE_COURSE_ID;
 
     private final DatabaseHelper helper;
+    private final Context appContext;
 
     public ResourceRepository(Context context) {
+        appContext = context.getApplicationContext();
         helper = DatabaseHelper.getInstance(context);
     }
 
@@ -50,8 +53,37 @@ public class ResourceRepository {
 
     // Only the database row is deleted here; the caller deletes the local file.
     public boolean delete(String id) {
-        return helper.getWritableDatabase().delete(TABLE_RESOURCE,
+        boolean deleted = helper.getWritableDatabase().delete(TABLE_RESOURCE,
                 COL_ID + "=?", new String[]{id}) > 0;
+        if (deleted) {
+            SyncManager.deleteRemote(appContext, "resources", id);
+        }
+        return deleted;
+    }
+
+    // ---------- Cloud sync helpers (used by SyncManager) ----------
+
+    // Links and online books only. Picked FILES stay on this phone (no cloud storage).
+    public List<Resource> getPendingSync() {
+        List<Resource> list = new ArrayList<>();
+        Cursor cursor = helper.getReadableDatabase().rawQuery(
+                SELECT_WITH_COURSE + " WHERE r." + COL_SYNC_STATUS + "=? AND r."
+                        + COL_RESOURCE_SOURCE_TYPE + "<>?",
+                new String[]{String.valueOf(SYNC_PENDING), Resource.SOURCE_FILE});
+        try {
+            while (cursor.moveToNext()) {
+                list.add(fromCursor(cursor));
+            }
+        } finally {
+            cursor.close();
+        }
+        return list;
+    }
+
+    public void upsertSynced(Resource r) {
+        r.setSyncStatus(SYNC_SYNCED);
+        helper.getWritableDatabase().insertWithOnConflict(TABLE_RESOURCE, null, toValues(r),
+                SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     public boolean setBookmarked(String id, boolean bookmarked) {

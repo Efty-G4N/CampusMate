@@ -374,4 +374,69 @@
         <item>Other</item>
     </string-array>
 
+    <!-- ===== Stage 8-10: Firebase Auth, Realtime Database sync, Firestore notices ===== -->
+    <string name="auth_title_login">Sign in</string>
+    <string name="auth_title_register">Create account</string>
+    <string name="auth_intro">An account is optional. It backs up your deadlines, links and profile to the cloud, and lets you read and post class notices.</string>
+    <string name="auth_hint_email">Email</string>
+    <string name="auth_hint_password">Password (at least 6 characters)</string>
+    <string name="auth_hint_confirm">Confirm password</string>
+    <string name="auth_button_login">Sign in</string>
+    <string name="auth_button_register">Create account</string>
+    <string name="auth_forgot">Forgot password?</string>
+    <string name="auth_switch_to_register">No account yet? Create one</string>
+    <string name="auth_switch_to_login">Already have an account? Sign in</string>
+    <string name="auth_error_email">Enter a valid email address</string>
+    <string name="auth_error_password">Use at least 6 characters</string>
+    <string name="auth_error_confirm">The passwords do not match</string>
+    <string name="auth_error_weak_password">This password is too weak. Try a longer one.</string>
+    <string name="auth_error_email_in_use">An account with this email already exists. Try signing in.</string>
+    <string name="auth_error_wrong_credentials">Email or password is wrong.</string>
+    <string name="auth_error_network">No connection to the server. Check your internet and try again.</string>
+    <string name="auth_error_other">Something went wrong. Please try again.</string>
+    <string name="auth_error_not_configured">Firebase is not set up in this build (google-services.json problem).</string>
+    <string name="auth_or">or</string>
+    <string name="auth_button_google">Continue with Google</string>
+    <string name="auth_error_google_not_configured">Google sign-in is not set up in this build. Add the SHA-1 fingerprint in Firebase and download google-services.json again.</string>
+    <string name="auth_error_google_no_account">No Google account found on this phone. Add one in Settings and try again.</string>
+    <string name="auth_error_google_failed">Google sign-in failed. Please try again.</string>
+    <string name="auth_toast_signed_in">Signed in</string>
+    <string name="auth_toast_registered">Account created. We sent a verification email.</string>
+    <string name="auth_toast_reset_sent">If an account exists for this email, a reset link has been sent.</string>
+
+    <string name="account_title">Cloud account</string>
+    <string name="account_signed_out">Not signed in. Your data stays on this phone only.</string>
+    <string name="account_signed_in_as">Signed in as %1$s</string>
+    <string name="account_never_synced">Not synced yet</string>
+    <string name="account_last_sync">Last sync: %1$s</string>
+    <string name="account_sign_in">Sign in</string>
+    <string name="account_sync_now">Sync now</string>
+    <string name="account_sign_out">Sign out</string>
+    <string name="account_toast_signed_out">Signed out. Your data on this phone is kept.</string>
+    <string name="account_sync_done">Sync finished: %1$d uploaded, %2$d downloaded</string>
+    <string name="account_sync_failed">Sync failed. Check your connection and the database rules.</string>
+    <string name="account_sync_busy">A sync is already running</string>
+    <string name="account_sync_not_configured">Realtime Database is not set up. Download google-services.json again after creating the database.</string>
+
+    <string name="notices_title">Class notices</string>
+    <string name="notices_title_course">%1$s notices</string>
+    <string name="notices_sign_in_needed">Sign in to read and post class notices.</string>
+    <string name="notices_empty">No notices yet. Post the first one.</string>
+    <string name="notices_error_rules">The server refused this request. Check the Firestore rules.</string>
+    <string name="notices_error_load">Could not load notices. Check your connection.</string>
+    <string name="notice_add">New notice</string>
+    <string name="notice_add_title">Post a notice</string>
+    <string name="notice_post">Post</string>
+    <string name="notice_hint_title">Title</string>
+    <string name="notice_hint_body">Message</string>
+    <string name="notice_hint_course">Course</string>
+    <string name="notice_general">General (all courses)</string>
+    <string name="notice_meta">%1$s · %2$s · %3$s</string>
+    <string name="notice_error_title">Enter a title</string>
+    <string name="notice_error_body">Enter a message</string>
+    <string name="notice_toast_posted">Notice posted</string>
+    <string name="notice_toast_failed">The server refused the change. Check the Firestore rules.</string>
+    <string name="notice_delete_title">Delete notice?</string>
+    <string name="notice_delete_message">Everyone in the class will no longer see it.</string>
+
 </resources>

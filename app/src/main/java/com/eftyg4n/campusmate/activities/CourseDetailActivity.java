@@ -131,6 +131,13 @@ public class CourseDetailActivity extends AppCompatActivity {
                     R.string.workspace_coming_soon, Toast.LENGTH_SHORT).show());
         }
 
+        // Notices: class-wide announcements stored in Cloud Firestore.
+        binding.buttonNotices.setOnClickListener(view -> {
+            Intent intent = new Intent(this, NoticesActivity.class);
+            intent.putExtra(NoticesActivity.EXTRA_COURSE_ID, courseId);
+            startActivity(intent);
+        });
+
         // Resources is real now: the Resource Library filtered to THIS course.
         binding.buttonResources.setOnClickListener(view -> {
             Intent intent = new Intent(this, ResourceListActivity.class);

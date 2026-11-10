@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.eftyg4n.campusmate.database.DatabaseHelper;
+import com.eftyg4n.campusmate.firebase.SyncManager;
 import com.eftyg4n.campusmate.models.Deadline;
 import com.eftyg4n.campusmate.utils.IdUtils;
 
@@ -30,8 +31,10 @@ public class DeadlineRepository {
                     + " = d." + COL_DEADLINE_COURSE_ID;
 
     private final DatabaseHelper helper;
+    private final Context appContext;
 
     public DeadlineRepository(Context context) {
+        appContext = context.getApplicationContext();
         helper = DatabaseHelper.getInstance(context);
     }
 
@@ -83,7 +86,46 @@ public class DeadlineRepository {
     // The reminders are deleted automatically (ON DELETE CASCADE).
     public boolean delete(String id) {
         SQLiteDatabase db = helper.getWritableDatabase();
-        return db.delete(TABLE_DEADLINE, COL_ID + "=?", new String[]{id}) > 0;
+        boolean deleted = db.delete(TABLE_DEADLINE, COL_ID + "=?", new String[]{id}) > 0;
+        if (deleted) {
+            // Signed in? Remove it from the cloud too (queued if we are offline).
+            SyncManager.deleteRemote(appContext, "deadlines", id);
+        }
+        return deleted;
+    }
+
+    // ---------- Cloud sync helpers (used by SyncManager) ----------
+
+    // Every deadline that changed here and is not in the cloud yet.
+    public List<Deadline> getPendingSync() {
+        List<Deadline> list = new ArrayList<>();
+        Cursor cursor = helper.getReadableDatabase().rawQuery(
+                SELECT_WITH_COURSE + " WHERE d." + COL_SYNC_STATUS + "=?",
+                new String[]{String.valueOf(SYNC_PENDING)});
+        try {
+            while (cursor.moveToNext()) {
+                list.add(fromCursor(cursor));
+            }
+        } finally {
+            cursor.close();
+        }
+        return list;
+    }
+
+    // Saves a deadline that came FROM the cloud: keeps its id and its updatedAt,
+    // and marks it synced so it is not uploaded again.
+    public void upsertSynced(Deadline deadline, List<Integer> reminderMinutes) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        deadline.setSyncStatus(SYNC_SYNCED);
+        db.beginTransaction();
+        try {
+            db.insertWithOnConflict(TABLE_DEADLINE, null, toValues(deadline),
+                    SQLiteDatabase.CONFLICT_REPLACE);
+            replaceReminders(db, deadline.getId(), reminderMinutes, deadline.getUpdatedAt());
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
     }
 
     // Marks a deadline completed (or pending again) and keeps the completion time.

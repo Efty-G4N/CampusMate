@@ -32,10 +32,10 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 - ✅ Runtime permissions
 
 ## Lecture 11
-- ⬜ Firebase Authentication (register, login, logout, reset)
-- ⬜ Realtime Database CRUD
-- ⬜ Firestore create/read (update/delete)
-- ⬜ Firebase Storage upload/retrieve
+- 🟩 Firebase Authentication (email register/login/logout/reset, Google sign-in)
+- 🟩 Realtime Database CRUD (deadlines, links, profile sync)
+- 🟩 Firestore create/read/delete (class notices, live listener)
+- ⬜ Firebase Storage upload/retrieve (skipped on purpose: needs the paid Blaze plan)
 - ✅ Volley HTTP request + JSON parsing (Open Library)
 - ✅ Glide (placeholder, error)
 
@@ -82,3 +82,15 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 - ✅ Add / edit / delete deadline (Material date and time pickers, multiple reminders, validation)
 - ✅ Reminder scheduling with WorkManager + notification with tap navigation
 - ✅ Home deadline card
+
+## Phase 5: Resource library
+- ✅ Resource table (DB version 6), Resource model and ResourceRepository (search, bookmark, recent)
+- ✅ Add / edit resource: file picker, image picker, link (content URI copied to app storage)
+- ✅ Open and share with FileProvider, foreground DownloadService with progress and cancel
+- ✅ Online book search (Volley + Open Library JSON) with Glide cover images
+
+## Phase 6: Cloud (Firebase)
+- 🟩 Account screen: email sign in / register / reset, Continue with Google
+- 🟩 Sync (Realtime Database): deadlines, links, profile; newest change wins; offline cache
+- 🟩 Class notices (Firestore), live updates
+- 🟩 App icon (adaptive + themed) and Home screen layout fix

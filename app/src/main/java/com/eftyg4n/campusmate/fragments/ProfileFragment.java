@@ -1,6 +1,12 @@
 package com.eftyg4n.campusmate.fragments;
 import android.content.Intent;
+import android.text.format.DateUtils;
+import com.eftyg4n.campusmate.activities.AuthActivity;
 import com.eftyg4n.campusmate.activities.ClassGroupsActivity;
+import com.eftyg4n.campusmate.firebase.SyncManager;
+import com.eftyg4n.campusmate.utils.NetworkUtils;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -67,8 +73,98 @@ public class ProfileFragment extends Fragment {
         binding.buttonClassGroups.setOnClickListener(view ->
                 startActivity(new Intent(requireContext(), ClassGroupsActivity.class)));
 
+        binding.buttonSignIn.setOnClickListener(view ->
+                startActivity(new Intent(requireContext(), AuthActivity.class)));
+        binding.buttonSyncNow.setOnClickListener(view -> syncNow());
+        binding.buttonSignOut.setOnClickListener(view -> {
+            FirebaseAuth.getInstance().signOut();
+            Toast.makeText(requireContext(), R.string.account_toast_signed_out,
+                    Toast.LENGTH_SHORT).show();
+            updateAccountCard();
+        });
+
         loadProfile();
         return binding.getRoot();
+    }
+
+    // Coming back from AuthActivity: show the new account state.
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateAccountCard();
+    }
+
+    // ---------- Cloud account ----------
+
+    private void updateAccountCard() {
+        if (binding == null) {
+            return;
+        }
+        FirebaseUser user = SyncManager.currentUser();
+        boolean signedIn = user != null;
+
+        binding.buttonSignIn.setVisibility(signedIn ? View.GONE : View.VISIBLE);
+        binding.buttonSyncNow.setVisibility(signedIn ? View.VISIBLE : View.GONE);
+        binding.buttonSignOut.setVisibility(signedIn ? View.VISIBLE : View.GONE);
+
+        if (!signedIn) {
+            binding.textAccountStatus.setText(R.string.account_signed_out);
+            binding.textLastSync.setVisibility(View.GONE);
+            return;
+        }
+        binding.textAccountStatus.setText(getString(R.string.account_signed_in_as,
+                user.getEmail() == null ? "" : user.getEmail()));
+        long last = SyncManager.lastSyncAt(requireContext());
+        binding.textLastSync.setVisibility(View.VISIBLE);
+        binding.textLastSync.setText(last == 0 ? getString(R.string.account_never_synced)
+                : getString(R.string.account_last_sync, DateUtils.getRelativeTimeSpanString(
+                last, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)));
+    }
+
+    private void syncNow() {
+        if (!NetworkUtils.isOnline(requireContext())) {
+            Toast.makeText(requireContext(), R.string.resource_toast_offline,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        binding.progressSync.setVisibility(View.VISIBLE);
+        binding.buttonSyncNow.setEnabled(false);
+        SyncManager.syncNow(requireContext(), new SyncManager.Callback() {
+            @Override
+            public void onDone(int pushed, int pulled) {
+                if (binding == null) {
+                    return;
+                }
+                finishSync();
+                Toast.makeText(requireContext(),
+                        getString(R.string.account_sync_done, pushed, pulled),
+                        Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError(int reason) {
+                if (binding == null) {
+                    return;
+                }
+                finishSync();
+                int text = reason == SyncManager.ERROR_NOT_CONFIGURED
+                        ? R.string.account_sync_not_configured
+                        : reason == SyncManager.ERROR_BUSY ? R.string.account_sync_busy
+                        : R.string.account_sync_failed;
+                Toast.makeText(requireContext(), text, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void finishSync() {
+        binding.progressSync.setVisibility(View.GONE);
+        binding.buttonSyncNow.setEnabled(true);
+        updateAccountCard();
+        // A fresh install may have just received the profile from the cloud.
+        // (Only then: reloading would throw away what the student typed but did not save.)
+        if (profile == null) {
+            loadProfile();
+        }
     }
 
     // Fills the form with the saved profile (or with defaults for a new student).

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.eftyg4n.campusmate.database.KuetSeedData;
 import com.eftyg4n.campusmate.notifications.NotificationHelper;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class CampusMateApp extends Application {
 
@@ -13,6 +14,15 @@ public class CampusMateApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // Realtime Database keeps a copy on disk and queues writes (and deletes) made
+        // offline. It must be switched on ONCE, before any other Firebase Database call.
+        try {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        } catch (RuntimeException e) {
+            // Usually: the database URL is missing from google-services.json.
+            Log.w(TAG, "Realtime Database not ready: " + e.getMessage());
+        }
 
         // Notification channels must exist before the first notification is shown.
         NotificationHelper.createChannels(this);
