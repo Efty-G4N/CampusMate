@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.eftyg4n.campusmate.R;
+import com.eftyg4n.campusmate.activities.AddEditCourseActivity;
 import com.eftyg4n.campusmate.activities.CourseDetailActivity;
 import com.eftyg4n.campusmate.activities.TeacherDirectoryActivity;
 import com.eftyg4n.campusmate.adapters.CourseAdapter;
@@ -64,6 +65,8 @@ public class CoursesFragment extends Fragment {
         });
         binding.buttonTeachers.setOnClickListener(view ->
                 startActivity(new Intent(requireContext(), TeacherDirectoryActivity.class)));
+        binding.fabAddCourse.setOnClickListener(view ->
+                startActivity(new Intent(requireContext(), AddEditCourseActivity.class)));
 
         return binding.getRoot();
     }

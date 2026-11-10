@@ -164,5 +164,30 @@
         <item>Fri</item>
         <item>Sat</item>
     </string-array>
+    <!-- Course add / edit -->
+    <string name="course_add">Add course</string>
+    <string name="course_edit">Edit</string>
+    <string name="course_form_title_add">New course</string>
+    <string name="course_form_title_edit">Edit course</string>
+    <string name="course_form_code_hint">Course code (example: CSE 2209)</string>
+    <string name="course_form_title_hint">Course title</string>
+    <string name="course_form_credits_hint">Credits</string>
+    <string name="course_form_type_hint">Course type</string>
+    <string name="course_form_description_hint">Description (optional)</string>
+    <string name="course_form_color_label">Color</string>
+    <string name="course_form_save">Save</string>
+    <string name="course_form_delete">Delete course</string>
+    <string name="course_form_error_code">Enter the course code</string>
+    <string name="course_form_error_title">Enter the course title</string>
+    <string name="course_form_error_credits">Enter credits between 0.25 and 10</string>
+    <string name="course_form_error_exists">This course code already exists in this semester</string>
+    <string name="course_form_saved">Course saved</string>
+    <string name="course_form_deleted">Course deleted</string>
+    <string name="course_form_save_failed">Could not save the course</string>
+    <string name="course_form_no_semester">No current semester selected</string>
+    <string name="course_delete_title">Delete this course?</string>
+    <string name="course_delete_message">%1$s will be deleted together with its routine classes and teacher links. This cannot be undone.</string>
+    <string name="course_delete_confirm">Delete</string>
+    <string name="course_delete_cancel">Cancel</string>
 
 </resources>

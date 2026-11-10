@@ -35,6 +35,10 @@
         <activity
             android:name=".activities.ClassGroupsActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.AddEditCourseActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

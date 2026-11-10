@@ -1,10 +1,13 @@
 package com.eftyg4n.campusmate.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -27,6 +30,16 @@ public class CourseDetailActivity extends AppCompatActivity {
     public static final String EXTRA_COURSE_ID = "extra_course_id";
 
     private ActivityCourseDetailBinding binding;
+    private String courseId;
+
+    // Opens the edit screen and receives its result.
+    // If the course was deleted there, this screen has nothing to show, so it closes.
+    private final ActivityResultLauncher<Intent> editLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == AddEditCourseActivity.RESULT_DELETED) {
+                    finish();
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +56,29 @@ public class CourseDetailActivity extends AppCompatActivity {
 
         binding.toolbar.setNavigationOnClickListener(view -> finish());
 
-        String courseId = getIntent().getStringExtra(EXTRA_COURSE_ID);
+        binding.toolbar.inflateMenu(R.menu.course_detail_menu);
+        binding.toolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.action_edit_course) {
+                Intent intent = new Intent(this, AddEditCourseActivity.class);
+                intent.putExtra(AddEditCourseActivity.EXTRA_COURSE_ID, courseId);
+                editLauncher.launch(intent);
+                return true;
+            }
+            return false;
+        });
+
+        courseId = getIntent().getStringExtra(EXTRA_COURSE_ID);
+        setupWorkspaceButtons();
+    }
+
+    // Load here (not in onCreate), so the screen is refreshed after an edit.
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isFinishing()) {
+            return;
+        }
+
         Course course = null;
         if (courseId != null) {
             course = new CourseRepository(this).getById(courseId);
@@ -56,7 +91,6 @@ public class CourseDetailActivity extends AppCompatActivity {
 
         showCourse(course);
         showTeachers(course);
-        setupWorkspaceButtons();
     }
 
     private void showCourse(Course course) {

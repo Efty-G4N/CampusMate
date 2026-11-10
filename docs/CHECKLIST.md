@@ -73,3 +73,4 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 - ✅ Sections and lab groups screen (simple ListView, ArrayAdapter, item click, student list dialog)
 - ✅ Housekeeping: TeacherAdapter moved to adapters/; seeding moved to CampusMateApp (Application class); temporary test block removed from MainActivity
 - ✅ Schedule screen (RecyclerView with two view types: day header and class card; daily/weekly toggle; next class card; filtered by section and lab group)
+- ✅ Course add / edit / delete (form validation, type dropdown with ArrayAdapter, color swatches, duplicate code check, delete confirm dialog, ActivityResult for delete)
