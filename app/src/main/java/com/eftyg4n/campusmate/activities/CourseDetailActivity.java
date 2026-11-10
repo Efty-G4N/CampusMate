@@ -131,6 +131,11 @@ public class CourseDetailActivity extends AppCompatActivity {
                     R.string.workspace_coming_soon, Toast.LENGTH_SHORT).show());
         }
 
+        // Marks, Syllabus and Lectures: each opens its own screen for THIS course.
+        binding.buttonMarks.setOnClickListener(view -> openForCourse(MarksActivity.class));
+        binding.buttonSyllabus.setOnClickListener(view -> openForCourse(SyllabusActivity.class));
+        binding.buttonLectures.setOnClickListener(view -> openForCourse(LecturesActivity.class));
+
         // Attendance is real now: present / absent log of THIS course.
         binding.buttonAttendance.setOnClickListener(view -> {
             Intent intent = new Intent(this, AttendanceActivity.class);
@@ -158,6 +163,13 @@ public class CourseDetailActivity extends AppCompatActivity {
             intent.putExtra(DeadlinesActivity.EXTRA_COURSE_ID, courseId);
             startActivity(intent);
         });
+    }
+
+    // Every course workspace screen takes the same extra, so one helper starts them all.
+    private void openForCourse(Class<?> screen) {
+        Intent intent = new Intent(this, screen);
+        intent.putExtra(EXTRA_COURSE_ID, courseId);
+        startActivity(intent);
     }
 
     private String typeLabel(String type) {

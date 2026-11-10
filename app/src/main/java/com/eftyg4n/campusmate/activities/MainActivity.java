@@ -2,10 +2,13 @@ package com.eftyg4n.campusmate.activities;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -18,6 +21,7 @@ import com.eftyg4n.campusmate.fragments.HomeFragment;
 import com.eftyg4n.campusmate.fragments.ProfileFragment;
 import com.eftyg4n.campusmate.fragments.ResourcesFragment;
 import com.eftyg4n.campusmate.fragments.ScheduleFragment;
+import com.eftyg4n.campusmate.utils.AppLock;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "CampusMate_Lifecycle";
 
     private ActivityMainBinding binding;
+    private boolean promptShowing;   // the lock prompt is on screen right now
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        binding.buttonUnlock.setOnClickListener(view -> askToUnlock());
 
         binding.bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -87,6 +94,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Log.d(TAG, "MainActivity onStart");
+        // Cover the dashboard BEFORE the first frame is drawn, then ask for the fingerprint.
+        if (!promptShowing && AppLock.shouldLockNow(this)) {
+            binding.lockCover.setVisibility(View.VISIBLE);
+            askToUnlock();
+        }
+    }
+
+    private void askToUnlock() {
+        if (promptShowing) {
+            return;
+        }
+        promptShowing = true;
+        new BiometricPrompt(this, ContextCompat.getMainExecutor(this),
+                new BiometricPrompt.AuthenticationCallback() {
+                    @Override
+                    public void onAuthenticationSucceeded(
+                            BiometricPrompt.AuthenticationResult result) {
+                        promptShowing = false;
+                        AppLock.markUnlocked();
+                        binding.lockCover.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAuthenticationError(int errorCode, CharSequence message) {
+                        // Cancelled or failed: the cover stays, the Unlock button tries again.
+                        promptShowing = false;
+                    }
+                }).authenticate(AppLock.promptInfo(this));
     }
 
     @Override
@@ -105,6 +140,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         Log.d(TAG, "MainActivity onStop");
+        if (!isChangingConfigurations()) {
+            AppLock.markStopped();   // starts the "come back within 30 s" timer
+        }
     }
 
     @Override

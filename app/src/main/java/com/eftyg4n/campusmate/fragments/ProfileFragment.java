@@ -3,6 +3,13 @@ import android.content.Intent;
 import android.text.format.DateUtils;
 import com.eftyg4n.campusmate.activities.AuthActivity;
 import com.eftyg4n.campusmate.activities.MainActivity;
+import com.eftyg4n.campusmate.activities.SemestersActivity;
+import com.eftyg4n.campusmate.activities.WelcomeActivity;
+import com.eftyg4n.campusmate.utils.AppLock;
+import com.eftyg4n.campusmate.utils.AppPrefs;
+import android.content.Context;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
 import com.eftyg4n.campusmate.activities.ClassGroupsActivity;
 import com.eftyg4n.campusmate.firebase.SyncManager;
 import com.eftyg4n.campusmate.utils.NetworkUtils;
@@ -84,8 +91,75 @@ public class ProfileFragment extends Fragment {
             updateAccountCard();
         });
 
+        setupSettingsCard();
         loadProfile();
         return binding.getRoot();
+    }
+
+    // ---------- App settings: lock, semesters, welcome preview ----------
+
+    private boolean updatingLockSwitch;
+
+    private void setupSettingsCard() {
+        binding.switchAppLock.setChecked(AppPrefs.isLockEnabled(requireContext()));
+        binding.switchAppLock.setOnCheckedChangeListener((button, checked) -> {
+            if (!updatingLockSwitch) {
+                changeLock(checked);
+            }
+        });
+        binding.buttonSemesters.setOnClickListener(view ->
+                startActivity(new Intent(requireContext(), SemestersActivity.class)));
+        // A way to see the welcome screen again without clearing the app's data.
+        binding.buttonShowWelcome.setOnClickListener(view -> {
+            AppPrefs.clearOnboarded(requireContext());
+            startActivity(new Intent(requireContext(), WelcomeActivity.class));
+        });
+    }
+
+    private void setLockSwitch(boolean value) {
+        if (binding == null) {
+            return;
+        }
+        updatingLockSwitch = true;
+        binding.switchAppLock.setChecked(value);
+        updatingLockSwitch = false;
+    }
+
+    // Turning the lock on or off both need a successful fingerprint / screen lock check,
+    // so a stranger holding an unlocked phone cannot switch it off.
+    private void changeLock(boolean enable) {
+        Context app = requireContext().getApplicationContext();
+        boolean usable = AppLock.canUseLock(app);
+
+        if (enable && !usable) {
+            Toast.makeText(app, R.string.lock_unavailable, Toast.LENGTH_LONG).show();
+            setLockSwitch(false);
+            return;
+        }
+        if (!enable && !usable) {
+            // The phone's screen lock was removed: nothing to check against, just switch off.
+            AppPrefs.setLockEnabled(app, false);
+            return;
+        }
+
+        new BiometricPrompt(this, ContextCompat.getMainExecutor(app),
+                new BiometricPrompt.AuthenticationCallback() {
+                    @Override
+                    public void onAuthenticationSucceeded(
+                            BiometricPrompt.AuthenticationResult result) {
+                        AppPrefs.setLockEnabled(app, enable);
+                        if (enable) {
+                            AppLock.markUnlocked();   // no second prompt right after enabling
+                        }
+                        Toast.makeText(app, enable ? R.string.lock_toast_on
+                                : R.string.lock_toast_off, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onAuthenticationError(int errorCode, CharSequence message) {
+                        setLockSwitch(!enable);   // cancelled: go back to the old state
+                    }
+                }).authenticate(AppLock.promptInfo(app));
     }
 
     // Coming back from AuthActivity: show the new account state.

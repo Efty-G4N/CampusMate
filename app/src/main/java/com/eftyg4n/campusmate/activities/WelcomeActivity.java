@@ -68,6 +68,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(MainActivity.EXTRA_FIRST_SETUP, needsProfile);
+        // A clean start: no old screens left underneath (also when previewed from Profile).
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
     }

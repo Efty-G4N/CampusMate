@@ -516,4 +516,102 @@
     <string name="home_profile_body">Add your roll number and section to see your own routine and next class here.</string>
     <string name="home_profile_button">Open profile</string>
 
+
+    <!-- App lock, settings -->
+    <string name="settings_title">App settings</string>
+    <string name="settings_app_lock">Lock app with fingerprint or screen lock</string>
+    <string name="settings_app_lock_hint">Protects the data on this phone. Asked again if you leave the app for more than 30 seconds.</string>
+    <string name="settings_semesters">Manage semesters</string>
+    <string name="settings_show_welcome">Preview the welcome screen</string>
+    <string name="lock_title">CampusMate is locked</string>
+    <string name="lock_unlock">Unlock</string>
+    <string name="lock_prompt_title">Unlock CampusMate</string>
+    <string name="lock_prompt_subtitle">Use your fingerprint, face or screen lock</string>
+    <string name="lock_unavailable">Set up a fingerprint or a screen lock in the phone settings first.</string>
+    <string name="lock_toast_on">App lock is on</string>
+    <string name="lock_toast_off">App lock is off</string>
+
+    <!-- Shared by the Stage 12 dialogs -->
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="ok">OK</string>
+    <string name="save_failed">Could not save</string>
+
+    <!-- Marks -->
+    <string name="marks_title">CT and Marks</string>
+    <string name="marks_add">Add mark</string>
+    <string name="marks_edit">Edit mark</string>
+    <string name="marks_empty">No marks yet. Add your first CT, quiz or assignment score.</string>
+    <string name="marks_overall">%1$s / %2$s</string>
+    <string name="marks_no_ct">No class test added yet.</string>
+    <string name="marks_best_ct">Best %1$d CT average: %2$s%% (from %3$d CT)</string>
+    <string name="marks_delete_title">Delete this mark?</string>
+    <string name="mark_title_hint">Title (e.g. CT-1)</string>
+    <string name="mark_category_hint">Type</string>
+    <string name="mark_obtained_hint">Marks obtained</string>
+    <string name="mark_total_hint">Out of</string>
+    <string name="mark_score">%1$s / %2$s · %3$s%%</string>
+    <string name="mark_error_title">Give it a title</string>
+    <string name="mark_error_total">Enter a total above 0</string>
+    <string name="mark_error_obtained">Must be between 0 and the total</string>
+    <string-array name="mark_category_labels">
+        <item>Class test (CT)</item>
+        <item>Quiz</item>
+        <item>Assignment</item>
+        <item>Lab</item>
+        <item>Mid term</item>
+        <item>Final</item>
+        <item>Other</item>
+    </string-array>
+
+    <!-- Syllabus -->
+    <string name="syllabus_title">Syllabus</string>
+    <string name="syllabus_add">Add topics</string>
+    <string name="syllabus_hint">Tap a topic when it is covered. Long-press to delete.</string>
+    <string name="syllabus_empty">The syllabus is empty. Add topics, one per line.</string>
+    <string name="syllabus_progress">%1$d / %2$d topics (%3$d%%)</string>
+    <string name="syllabus_dialog_hint">One topic per line</string>
+    <string name="syllabus_added">%1$d topics added</string>
+    <string name="syllabus_delete_title">Delete this topic?</string>
+
+    <!-- Lectures -->
+    <string name="lectures_title">Lecture history</string>
+    <string name="lectures_add">Log a lecture</string>
+    <string name="lectures_edit">Edit lecture</string>
+    <string name="lectures_empty">No lectures logged yet.</string>
+    <plurals name="lectures_count">
+        <item quantity="one">%d lecture logged</item>
+        <item quantity="other">%d lectures logged</item>
+    </plurals>
+    <string name="lectures_no_syllabus">Add syllabus topics to see how much is covered.</string>
+    <string name="lectures_covered">Syllabus covered: %1$d / %2$d topics</string>
+    <string name="lectures_delete_title">Delete this lecture?</string>
+    <string name="lecture_title_hint">What was taught</string>
+    <string name="lecture_note_hint">Note (optional)</string>
+    <string name="lecture_pick_topics">Mark syllabus topics covered</string>
+    <string name="lecture_no_pending_topics">No pending syllabus topics</string>
+    <string name="lecture_error_title">Write what was taught</string>
+
+    <!-- Semesters -->
+    <string name="semesters_title">Semesters</string>
+    <string name="semesters_add">Add semester</string>
+    <string name="semesters_empty">No semesters yet.</string>
+    <string name="semester_name_hint">Name (e.g. 3-1)</string>
+    <string name="semester_session_hint">Session (optional, e.g. 2023-24)</string>
+    <string name="semester_year_hint">Year (1-4, optional)</string>
+    <string name="semester_term_hint">Term (1-2, optional)</string>
+    <string name="semester_section_hint">Section (optional)</string>
+    <string name="semester_year_term">Year %1$d, Term %2$d</string>
+    <string name="semester_section_line">Section %1$s</string>
+    <string name="semester_flag_current">Current</string>
+    <string name="semester_flag_archived">Archived</string>
+    <string name="semester_action_edit">Edit</string>
+    <string name="semester_action_current">Make current</string>
+    <string name="semester_action_archive">Archive</string>
+    <string name="semester_action_restore">Restore</string>
+    <string name="semester_error_name">Give it a name</string>
+    <string name="semester_error_year_term">Year is 1-4 and term is 1-2</string>
+    <string name="semester_delete_title">Delete this semester?</string>
+    <string name="semester_delete_message">%1$s and ALL its courses, classes, attendance, marks, syllabus and lectures will be deleted. This cannot be undone.</string>
 </resources>

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "campusmate.db";
-    private static final int DB_VERSION = 7;
+    private static final int DB_VERSION = 8;
 
     // ---------- Sync status values ----------
     public static final int SYNC_PENDING = 0;
@@ -143,6 +143,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_ATT_STATUS = "status";
     public static final String COL_ATT_NOTE = "note";
 
+    public static final String TABLE_MARK = "mark";
+    public static final String COL_MARK_COURSE_ID = "course_id";
+    public static final String COL_MARK_TITLE = "title";
+    public static final String COL_MARK_CATEGORY = "category";
+    public static final String COL_MARK_OBTAINED = "obtained";
+    public static final String COL_MARK_TOTAL = "total";
+
+    public static final String TABLE_TOPIC = "syllabus_topic";
+    public static final String COL_TOPIC_COURSE_ID = "course_id";
+    public static final String COL_TOPIC_TITLE = "title";
+    public static final String COL_TOPIC_POSITION = "position";
+    public static final String COL_TOPIC_DONE = "is_done";
+    public static final String COL_TOPIC_DONE_AT = "done_at";
+
+    public static final String TABLE_LECTURE = "lecture";
+    public static final String COL_LECTURE_COURSE_ID = "course_id";
+    public static final String COL_LECTURE_DATE = "lecture_date";
+    public static final String COL_LECTURE_TITLE = "title";
+    public static final String COL_LECTURE_NOTE = "note";
+
     private static DatabaseHelper instance;
 
 
@@ -249,10 +269,63 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createReminderTable(db);
         createResourceTable(db);
         createAttendanceTable(db);
+        createMarkTable(db);
+        createTopicTable(db);
+        createLectureTable(db);
     }
 
     // course_id is SET NULL (not CASCADE): deleting a course must not delete
     // the student's files, they simply become "general" resources.
+    // CT, quiz, assignment, lab... marks of one course.
+    private void createMarkTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + TABLE_MARK + " ("
+                + COL_ID + " TEXT PRIMARY KEY, "
+                + COL_OWNER_UID + " TEXT, "
+                + COL_MARK_COURSE_ID + " TEXT NOT NULL, "
+                + COL_MARK_TITLE + " TEXT NOT NULL, "
+                + COL_MARK_CATEGORY + " TEXT NOT NULL, "
+                + COL_MARK_OBTAINED + " REAL NOT NULL, "
+                + COL_MARK_TOTAL + " REAL NOT NULL, "
+                + COL_CREATED_AT + " INTEGER NOT NULL, "
+                + COL_UPDATED_AT + " INTEGER NOT NULL, "
+                + COL_SYNC_STATUS + " INTEGER NOT NULL DEFAULT 0, "
+                + "FOREIGN KEY (" + COL_MARK_COURSE_ID + ") REFERENCES "
+                + TABLE_COURSE + "(" + COL_ID + ") ON DELETE CASCADE)");
+    }
+
+    // The syllabus of a course as a checklist of topics, kept in order.
+    private void createTopicTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + TABLE_TOPIC + " ("
+                + COL_ID + " TEXT PRIMARY KEY, "
+                + COL_OWNER_UID + " TEXT, "
+                + COL_TOPIC_COURSE_ID + " TEXT NOT NULL, "
+                + COL_TOPIC_TITLE + " TEXT NOT NULL, "
+                + COL_TOPIC_POSITION + " INTEGER NOT NULL, "
+                + COL_TOPIC_DONE + " INTEGER NOT NULL DEFAULT 0, "
+                + COL_TOPIC_DONE_AT + " INTEGER, "
+                + COL_CREATED_AT + " INTEGER NOT NULL, "
+                + COL_UPDATED_AT + " INTEGER NOT NULL, "
+                + COL_SYNC_STATUS + " INTEGER NOT NULL DEFAULT 0, "
+                + "FOREIGN KEY (" + COL_TOPIC_COURSE_ID + ") REFERENCES "
+                + TABLE_COURSE + "(" + COL_ID + ") ON DELETE CASCADE)");
+    }
+
+    // What was taught on which day.
+    private void createLectureTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + TABLE_LECTURE + " ("
+                + COL_ID + " TEXT PRIMARY KEY, "
+                + COL_OWNER_UID + " TEXT, "
+                + COL_LECTURE_COURSE_ID + " TEXT NOT NULL, "
+                + COL_LECTURE_DATE + " INTEGER NOT NULL, "
+                + COL_LECTURE_TITLE + " TEXT NOT NULL, "
+                + COL_LECTURE_NOTE + " TEXT, "
+                + COL_CREATED_AT + " INTEGER NOT NULL, "
+                + COL_UPDATED_AT + " INTEGER NOT NULL, "
+                + COL_SYNC_STATUS + " INTEGER NOT NULL DEFAULT 0, "
+                + "FOREIGN KEY (" + COL_LECTURE_COURSE_ID + ") REFERENCES "
+                + TABLE_COURSE + "(" + COL_ID + ") ON DELETE CASCADE)");
+    }
+
     // One row per course and class day (UNIQUE), removed together with its course.
     private void createAttendanceTable(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_ATTENDANCE + " ("
@@ -428,6 +501,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Version 6 -> 7: attendance records.
         if (oldVersion < 7) {
             createAttendanceTable(db);
+        }
+        // Version 7 -> 8: marks, syllabus topics, lecture history.
+        if (oldVersion < 8) {
+            createMarkTable(db);
+            createTopicTable(db);
+            createLectureTable(db);
         }
     }
 }

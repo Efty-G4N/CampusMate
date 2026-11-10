@@ -8,6 +8,7 @@ public final class AppPrefs {
 
     public static final String FILE = "campusmate_prefs";
     private static final String KEY_ONBOARDED = "onboarded";
+    private static final String KEY_LOCK = "app_lock_enabled";
     private static final String KEY_REQUIRED_ATTENDANCE = "attendance_required_percent";
 
     private AppPrefs() {
@@ -24,6 +25,19 @@ public final class AppPrefs {
 
     public static void setOnboarded(Context context) {
         prefs(context).edit().putBoolean(KEY_ONBOARDED, true).apply();
+    }
+
+    // Lets the welcome screen be previewed again from the Profile tab.
+    public static void clearOnboarded(Context context) {
+        prefs(context).edit().putBoolean(KEY_ONBOARDED, false).apply();
+    }
+
+    public static boolean isLockEnabled(Context context) {
+        return prefs(context).getBoolean(KEY_LOCK, false);
+    }
+
+    public static void setLockEnabled(Context context, boolean enabled) {
+        prefs(context).edit().putBoolean(KEY_LOCK, enabled).apply();
     }
 
     // Same value the Attendance screen lets the student change.
