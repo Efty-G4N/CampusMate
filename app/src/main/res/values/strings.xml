@@ -439,4 +439,81 @@
     <string name="notice_delete_title">Delete notice?</string>
     <string name="notice_delete_message">Everyone in the class will no longer see it.</string>
 
+    <!-- Attendance -->
+    <string name="attendance_title">Attendance</string>
+    <string name="attendance_course_line">%1$s · %2$s</string>
+    <string name="attendance_required_action">Required %</string>
+    <string name="attendance_percent">%1$s%%</string>
+    <string name="attendance_counts">Attended %1$d of %2$d classes · %3$d absent · required %4$d%%</string>
+    <string name="attendance_advice_none">Nothing recorded yet. Mark today to start.</string>
+    <string name="attendance_advice_edge">You are on track, but you cannot miss the next class and stay at %1$d%%.</string>
+    <plurals name="attendance_advice_can_miss">
+        <item quantity="one">You are on track. You can miss %1$d more class and stay at %2$d%% or above.</item>
+        <item quantity="other">You are on track. You can miss %1$d more classes and stay at %2$d%% or above.</item>
+    </plurals>
+    <plurals name="attendance_advice_need">
+        <item quantity="one">Below the required %2$d%%. Attend the next %1$d class in a row to get back.</item>
+        <item quantity="other">Below the required %2$d%%. Attend the next %1$d classes in a row to get back.</item>
+    </plurals>
+    <string name="attendance_advice_impossible">The requirement is 100%%, so a missed class cannot be made up.</string>
+    <string name="attendance_mark_present">Present today</string>
+    <string name="attendance_mark_absent">Absent today</string>
+    <string name="attendance_add_other">Another date</string>
+    <string name="attendance_no_records">No classes recorded yet. Tap Present or Absent to log today.</string>
+    <string name="attendance_status_present">Present</string>
+    <string name="attendance_status_late">Late</string>
+    <string name="attendance_status_absent">Absent</string>
+    <string name="attendance_delete_record">Delete record</string>
+    <string name="attendance_pick_date">Pick the class date</string>
+    <string name="attendance_pick_status">%1$s: mark as</string>
+    <string name="attendance_saved">Saved</string>
+    <string name="attendance_save_failed">Could not save. Please try again.</string>
+    <string name="attendance_deleted">Record deleted</string>
+    <string name="attendance_required_title">Required attendance</string>
+    <string name="attendance_required_hint">Percentage (1 to 100)</string>
+    <string name="attendance_required_error">Enter a number from 1 to 100</string>
+    <string name="attendance_save">Save</string>
+    <string name="attendance_cancel">Cancel</string>
+
+    <!-- Splash, welcome, home dashboard -->
+    <string name="splash_logo_description">CampusMate logo</string>
+    <string name="splash_tagline">Your campus, organised</string>
+    <string name="onboarding_tagline">Classes, attendance, deadlines and notes in one calm place.</string>
+    <string name="onboarding_feature_1">📅  Your weekly routine, by section and lab group</string>
+    <string name="onboarding_feature_2">✅  Attendance and deadlines with reminders</string>
+    <string name="onboarding_feature_3">📚  Notes, links and books for every course</string>
+    <string name="onboarding_create">Create account</string>
+    <string name="onboarding_sign_in">I already have an account</string>
+    <string name="onboarding_skip">Continue without an account</string>
+    <string name="onboarding_note">No account needed: everything works offline on this phone. An account adds cloud backup and class notices.</string>
+    <string name="profile_setup_hint">Welcome! Fill in your profile to see your own routine and classes.</string>
+
+    <string name="home_greet_morning">Good morning</string>
+    <string name="home_greet_afternoon">Good afternoon</string>
+    <string name="home_greet_evening">Good evening</string>
+    <string name="home_greeting_named">%1$s, %2$s</string>
+    <string name="home_class_info_section">Section %1$s</string>
+    <string name="home_class_info_lab">Lab group %1$s</string>
+    <string name="home_next_label">UP NEXT</string>
+    <string name="home_next_need_profile">Add your section in Profile to see your next class here.</string>
+    <string name="home_next_none">No classes in your routine yet.</string>
+    <string name="home_next_running">Running now</string>
+    <string name="home_next_in_minutes">Starts in %1$d min</string>
+    <string name="home_next_today">Later today</string>
+    <string name="home_next_tomorrow">Tomorrow</string>
+    <string name="home_next_week_day">%1$s next week</string>
+    <string name="home_attendance_label">ATTENDANCE WATCH</string>
+    <string name="home_attendance_none">Nothing recorded yet. Open a course and mark today\'s class.</string>
+    <string name="home_attendance_line">%1$s is lowest at %2$s%%</string>
+    <string name="home_attendance_ok">Above your required %1$d%%. Keep it up.</string>
+    <string name="home_attendance_low">Below your required %1$d%%. Tap to see how many classes to attend.</string>
+    <string name="home_actions_title">Quick actions</string>
+    <string name="home_action_deadline">Add deadline</string>
+    <string name="home_action_courses">My courses</string>
+    <string name="home_action_resources">Resources</string>
+    <string name="home_action_notices">Notices</string>
+    <string name="home_profile_title">Finish your profile</string>
+    <string name="home_profile_body">Add your roll number and section to see your own routine and next class here.</string>
+    <string name="home_profile_button">Open profile</string>
+
 </resources>

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "campusmate.db";
-    private static final int DB_VERSION = 6;
+    private static final int DB_VERSION = 7;
 
     // ---------- Sync status values ----------
     public static final int SYNC_PENDING = 0;
@@ -137,6 +137,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_RESOURCE_BOOKMARKED = "is_bookmarked";
     public static final String COL_RESOURCE_LAST_OPENED = "last_opened_at";
 
+    public static final String TABLE_ATTENDANCE = "attendance";
+    public static final String COL_ATT_COURSE_ID = "course_id";
+    public static final String COL_ATT_DATE = "class_date";
+    public static final String COL_ATT_STATUS = "status";
+    public static final String COL_ATT_NOTE = "note";
+
     private static DatabaseHelper instance;
 
 
@@ -242,10 +248,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createDeadlineTable(db);
         createReminderTable(db);
         createResourceTable(db);
+        createAttendanceTable(db);
     }
 
     // course_id is SET NULL (not CASCADE): deleting a course must not delete
     // the student's files, they simply become "general" resources.
+    // One row per course and class day (UNIQUE), removed together with its course.
+    private void createAttendanceTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + TABLE_ATTENDANCE + " ("
+                + COL_ID + " TEXT PRIMARY KEY, "
+                + COL_OWNER_UID + " TEXT, "
+                + COL_ATT_COURSE_ID + " TEXT NOT NULL, "
+                + COL_ATT_DATE + " INTEGER NOT NULL, "
+                + COL_ATT_STATUS + " TEXT NOT NULL, "
+                + COL_ATT_NOTE + " TEXT, "
+                + COL_CREATED_AT + " INTEGER NOT NULL, "
+                + COL_UPDATED_AT + " INTEGER NOT NULL, "
+                + COL_SYNC_STATUS + " INTEGER NOT NULL DEFAULT 0, "
+                + "UNIQUE (" + COL_ATT_COURSE_ID + ", " + COL_ATT_DATE + "), "
+                + "FOREIGN KEY (" + COL_ATT_COURSE_ID + ") REFERENCES "
+                + TABLE_COURSE + "(" + COL_ID + ") ON DELETE CASCADE)");
+    }
+
     private void createResourceTable(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_RESOURCE + " ("
                 + COL_ID + " TEXT PRIMARY KEY, "
@@ -400,6 +424,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Version 5 -> 6: Resource Library.
         if (oldVersion < 6) {
             createResourceTable(db);
+        }
+        // Version 6 -> 7: attendance records.
+        if (oldVersion < 7) {
+            createAttendanceTable(db);
         }
     }
 }

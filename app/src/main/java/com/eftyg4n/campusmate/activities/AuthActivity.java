@@ -42,6 +42,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 // The app also works WITHOUT an account: this screen is opened from the Profile tab.
 public class AuthActivity extends AppCompatActivity {
 
+    public static final String EXTRA_START_REGISTER = "extra_start_register";
+
     private static final String TAG = "CampusMate_Auth";
     private static final String STATE_REGISTER = "state_register";
 
@@ -76,7 +78,10 @@ public class AuthActivity extends AppCompatActivity {
         binding.buttonForgot.setOnClickListener(view -> sendResetEmail());
         binding.buttonGoogle.setOnClickListener(view -> signInWithGoogle());
 
-        setMode(savedInstanceState != null && savedInstanceState.getBoolean(STATE_REGISTER));
+        boolean startRegister = savedInstanceState != null
+                ? savedInstanceState.getBoolean(STATE_REGISTER)
+                : getIntent().getBooleanExtra(EXTRA_START_REGISTER, false);
+        setMode(startRegister);
     }
 
     private void setMode(boolean register) {
@@ -250,7 +255,7 @@ public class AuthActivity extends AppCompatActivity {
                             }
                         });
                 return;
-            }  catch (RuntimeException e) {
+            } catch (RuntimeException e) {
                 Log.w(TAG, "Bad Google token", e);
             }
         }

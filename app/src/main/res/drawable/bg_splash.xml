@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The blue of the app icon: used by the splash, the welcome screen and the Home header. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="270"
+        android:endColor="#001C80"
+        android:startColor="#0A5CFF" />
+</shape>

@@ -2,6 +2,7 @@ package com.eftyg4n.campusmate.activities;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,9 @@ import com.eftyg4n.campusmate.fragments.ResourcesFragment;
 import com.eftyg4n.campusmate.fragments.ScheduleFragment;
 
 public class MainActivity extends AppCompatActivity {
+
+    // Set by the welcome screen after sign in: open the Profile tab so the student fills it in.
+    public static final String EXTRA_FIRST_SETUP = "extra_first_setup";
 
     private static final String TAG = "CampusMate_Lifecycle";
 
@@ -58,13 +62,23 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if (savedInstanceState == null) {
-            binding.bottomNav.setSelectedItemId(R.id.nav_home);
+            boolean firstSetup = getIntent().getBooleanExtra(EXTRA_FIRST_SETUP, false);
+            binding.bottomNav.setSelectedItemId(firstSetup ? R.id.nav_profile : R.id.nav_home);
+            if (firstSetup) {
+                Toast.makeText(this, R.string.profile_setup_hint, Toast.LENGTH_LONG).show();
+            }
         }
+    }
+
+    // Lets a fragment (for example the Home cards) jump to another tab.
+    public void openTab(int menuId) {
+        binding.bottomNav.setSelectedItemId(menuId);
     }
 
     private void showFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
+                .setCustomAnimations(R.anim.cm_fade_in, R.anim.cm_fade_out)
                 .replace(R.id.fragmentContainer, fragment)
                 .commit();
     }

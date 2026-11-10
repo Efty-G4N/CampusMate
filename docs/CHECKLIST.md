@@ -94,3 +94,11 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 - 🟩 Sync (Realtime Database): deadlines, links, profile; newest change wins; offline cache
 - 🟩 Class notices (Firestore), live updates
 - 🟩 App icon (adaptive + themed) and Home screen layout fix
+
+## Phase 7: Course workspace
+- ✅ Attendance (present/late/absent, percentage, "how many can I miss", editable required %)
+
+## Phase 8: Launch flow and Home
+- ✅ Splash with animation, Welcome screen (create account / sign in / continue without account)
+- ✅ Home dashboard: greeting, next class, attendance watch, deadlines, quick actions
+- ✅ Screen transitions (theme animations) and staggered entrance animation

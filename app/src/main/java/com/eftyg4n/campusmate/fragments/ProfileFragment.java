@@ -2,6 +2,7 @@ package com.eftyg4n.campusmate.fragments;
 import android.content.Intent;
 import android.text.format.DateUtils;
 import com.eftyg4n.campusmate.activities.AuthActivity;
+import com.eftyg4n.campusmate.activities.MainActivity;
 import com.eftyg4n.campusmate.activities.ClassGroupsActivity;
 import com.eftyg4n.campusmate.firebase.SyncManager;
 import com.eftyg4n.campusmate.utils.NetworkUtils;
@@ -312,6 +313,7 @@ public class ProfileFragment extends Fragment {
             return;
         }
 
+        boolean firstSave = (profile == null);
         UserProfile toSave = (profile != null) ? profile : new UserProfile();
         toSave.setRollNo(roll);
         toSave.setRollSerialDigits(digits);
@@ -328,6 +330,10 @@ public class ProfileFragment extends Fragment {
             profile = toSave;
             updateHeader();
             Toast.makeText(requireContext(), R.string.profile_saved, Toast.LENGTH_SHORT).show();
+            if (firstSave && requireActivity() instanceof MainActivity) {
+                // First profile ever: show the student what it unlocked (routine, attendance).
+                ((MainActivity) requireActivity()).openTab(R.id.nav_home);
+            }
         } else {
             Toast.makeText(requireContext(), R.string.profile_save_failed,
                     Toast.LENGTH_SHORT).show();

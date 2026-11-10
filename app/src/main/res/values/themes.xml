@@ -10,7 +10,24 @@
         <item name="colorOnSurface">@color/cm_on_surface</item>
         <item name="colorError">@color/cm_error</item>
         <item name="android:statusBarColor">@color/cm_primary_dark</item>
+        <item name="android:windowAnimationStyle">@style/CampusMate.WindowAnimation</item>
     </style>
 
     <style name="Theme.CampusMate" parent="Base.Theme.CampusMate" />
+
+    <!-- Every screen slides in and fades, instead of the default hard cut. -->
+    <style name="CampusMate.WindowAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/cm_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/cm_exit</item>
+        <item name="android:activityCloseEnterAnimation">@anim/cm_pop_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/cm_pop_exit</item>
+    </style>
+
+    <!-- Same blue as the logo, so the system splash (Android 12+) flows into ours. -->
+    <style name="Theme.CampusMate.Splash" parent="Theme.CampusMate">
+        <item name="android:windowBackground">@drawable/bg_splash</item>
+        <item name="android:windowSplashScreenBackground" tools:targetApi="31">#0A5CFF</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
 </resources>

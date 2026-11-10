@@ -131,6 +131,13 @@ public class CourseDetailActivity extends AppCompatActivity {
                     R.string.workspace_coming_soon, Toast.LENGTH_SHORT).show());
         }
 
+        // Attendance is real now: present / absent log of THIS course.
+        binding.buttonAttendance.setOnClickListener(view -> {
+            Intent intent = new Intent(this, AttendanceActivity.class);
+            intent.putExtra(AttendanceActivity.EXTRA_COURSE_ID, courseId);
+            startActivity(intent);
+        });
+
         // Notices: class-wide announcements stored in Cloud Firestore.
         binding.buttonNotices.setOnClickListener(view -> {
             Intent intent = new Intent(this, NoticesActivity.class);
