@@ -72,3 +72,4 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 - ✅ Courses list/grid switch (LinearLayoutManager and GridLayoutManager)
 - ✅ Sections and lab groups screen (simple ListView, ArrayAdapter, item click, student list dialog)
 - ✅ Housekeeping: TeacherAdapter moved to adapters/; seeding moved to CampusMateApp (Application class); temporary test block removed from MainActivity
+- ✅ Schedule screen (RecyclerView with two view types: day header and class card; daily/weekly toggle; next class card; filtered by section and lab group)

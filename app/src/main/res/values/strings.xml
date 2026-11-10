@@ -119,5 +119,50 @@
     <string name="class_group_yours">Your group</string>
     <string name="class_group_students_title">%1$s · %2$d students</string>
     <string name="class_group_no_students">No students found in this group</string>
+    <!-- Schedule -->
+    <string name="schedule_header_section">Section %1$s</string>
+    <string name="schedule_header_group">Section %1$s · Lab group %2$s</string>
+    <string name="schedule_view_daily">Daily</string>
+    <string name="schedule_view_weekly">Weekly</string>
+    <string name="schedule_no_profile">Set your section in the Profile tab to see your routine</string>
+    <string name="schedule_no_routine">No routine found for Section %1$s</string>
+    <string name="schedule_empty_day">No classes on this day</string>
+    <string name="schedule_next_label">Next class · %1$s</string>
+    <string name="schedule_when_now">Now</string>
+    <string name="schedule_when_today">Today</string>
+    <string name="schedule_when_tomorrow">Tomorrow</string>
+    <string name="schedule_next_course">%1$s · %2$s</string>
+    <string name="schedule_time_range">%1$s – %2$s</string>
+    <string name="schedule_period_single">Period %1$d</string>
+    <string name="schedule_period_range">Periods %1$d–%2$d</string>
+    <string name="schedule_room">Room %1$s</string>
+    <string name="schedule_teachers">Teacher: %1$s</string>
+    <string name="schedule_teacher_or">or</string>
+    <string name="schedule_type_theory">Theory</string>
+    <string name="schedule_type_lab">Lab</string>
+    <string name="schedule_type_lab_group">Lab · %1$s</string>
+    <string name="schedule_status_cancelled">Cancelled</string>
+    <string name="schedule_status_rescheduled">Rescheduled</string>
+    <string name="schedule_am">AM</string>
+    <string name="schedule_pm">PM</string>
+
+    <string-array name="schedule_days">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
+    <string-array name="schedule_days_short">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </string-array>
 
 </resources>

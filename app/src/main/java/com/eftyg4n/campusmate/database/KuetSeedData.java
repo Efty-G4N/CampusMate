@@ -121,7 +121,7 @@ public class KuetSeedData {
     private static final int[] PERIOD_START = {0, 480, 530, 580, 640, 690, 740, 870, 920, 970};
     private static final int[] PERIOD_END = {0, 530, 580, 630, 690, 740, 790, 920, 970, 1020};
 
-    private static final String NOTE_C = "Marked with 'c' in the routine (meaning not confirmed)";
+    private static final String NOTE_C = "Combined class";
 
     // Section B (from 2-2_Routine.jpg).
     // day (0 = Sunday), first period, last period, course code, class type,
