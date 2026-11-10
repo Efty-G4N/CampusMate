@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "campusmate.db";
-    private static final int DB_VERSION = 5;
+    private static final int DB_VERSION = 6;
 
     // ---------- Sync status values ----------
     public static final int SYNC_PENDING = 0;
@@ -119,6 +119,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_REMINDER = "reminder";
     public static final String COL_REMINDER_DEADLINE_ID = "deadline_id";
     public static final String COL_REMINDER_MINUTES_BEFORE = "minutes_before";
+    // ---------- Table: resource (Resource Library) ----------
+    public static final String TABLE_RESOURCE = "resource";
+    public static final String COL_RESOURCE_COURSE_ID = "course_id";
+    public static final String COL_RESOURCE_TOPIC = "topic";
+    public static final String COL_RESOURCE_TITLE = "title";
+    public static final String COL_RESOURCE_DESCRIPTION = "description";
+    public static final String COL_RESOURCE_CATEGORY = "category";
+    public static final String COL_RESOURCE_SOURCE_TYPE = "source_type";
+    public static final String COL_RESOURCE_URI = "uri";
+    public static final String COL_RESOURCE_LOCAL_PATH = "local_path";
+    public static final String COL_RESOURCE_MIME = "mime_type";
+    public static final String COL_RESOURCE_SIZE = "size_bytes";
+    public static final String COL_RESOURCE_AUTHOR = "author";
+    public static final String COL_RESOURCE_COVER_URL = "cover_url";
+    public static final String COL_RESOURCE_REMOTE_URL = "remote_url";
+    public static final String COL_RESOURCE_BOOKMARKED = "is_bookmarked";
+    public static final String COL_RESOURCE_LAST_OPENED = "last_opened_at";
+
     private static DatabaseHelper instance;
 
 
@@ -219,9 +237,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + "FOREIGN KEY (" + COL_CT_TEACHER_ID + ") REFERENCES "
                 + TABLE_TEACHER + "(" + COL_ID + ") ON DELETE CASCADE)");
         createClassGroupTable(db);
+        createClassmateTable(db);
         createRoutineTable(db);
         createDeadlineTable(db);
         createReminderTable(db);
+        createResourceTable(db);
+    }
+
+    // course_id is SET NULL (not CASCADE): deleting a course must not delete
+    // the student's files, they simply become "general" resources.
+    private void createResourceTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + TABLE_RESOURCE + " ("
+                + COL_ID + " TEXT PRIMARY KEY, "
+                + COL_OWNER_UID + " TEXT, "
+                + COL_RESOURCE_COURSE_ID + " TEXT, "
+                + COL_RESOURCE_TOPIC + " TEXT, "
+                + COL_RESOURCE_TITLE + " TEXT NOT NULL, "
+                + COL_RESOURCE_DESCRIPTION + " TEXT, "
+                + COL_RESOURCE_CATEGORY + " TEXT NOT NULL DEFAULT 'NOTES', "
+                + COL_RESOURCE_SOURCE_TYPE + " TEXT NOT NULL DEFAULT 'FILE', "
+                + COL_RESOURCE_URI + " TEXT, "
+                + COL_RESOURCE_LOCAL_PATH + " TEXT, "
+                + COL_RESOURCE_MIME + " TEXT, "
+                + COL_RESOURCE_SIZE + " INTEGER NOT NULL DEFAULT 0, "
+                + COL_RESOURCE_AUTHOR + " TEXT, "
+                + COL_RESOURCE_COVER_URL + " TEXT, "
+                + COL_RESOURCE_REMOTE_URL + " TEXT, "
+                + COL_RESOURCE_BOOKMARKED + " INTEGER NOT NULL DEFAULT 0, "
+                + COL_RESOURCE_LAST_OPENED + " INTEGER NOT NULL DEFAULT 0, "
+                + COL_CREATED_AT + " INTEGER NOT NULL, "
+                + COL_UPDATED_AT + " INTEGER NOT NULL, "
+                + COL_SYNC_STATUS + " INTEGER NOT NULL DEFAULT 0, "
+                + "FOREIGN KEY (" + COL_RESOURCE_COURSE_ID + ") REFERENCES "
+                + TABLE_COURSE + "(" + COL_ID + ") ON DELETE SET NULL)");
     }
 
     private void createDeadlineTable(SQLiteDatabase db) {
@@ -260,6 +308,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + "FOREIGN KEY (" + COL_REMINDER_DEADLINE_ID + ") REFERENCES "
                 + TABLE_DEADLINE + "(" + COL_ID + ") ON DELETE CASCADE)");
     }
+
     private void createRoutineTable(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_ROUTINE + " ("
                 + COL_ID + " TEXT PRIMARY KEY, "
@@ -347,6 +396,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (oldVersion < 5) {
             createDeadlineTable(db);
             createReminderTable(db);
+        }
+        // Version 5 -> 6: Resource Library.
+        if (oldVersion < 6) {
+            createResourceTable(db);
         }
     }
 }

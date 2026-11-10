@@ -4,6 +4,15 @@
 
     <!-- Android 13+: asked at runtime, only when the student saves a deadline with reminders -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Volley (Open Library) and the download service. Normal permissions: granted at install. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Foreground service (Android 14+ also needs the permission of its TYPE) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+
     <application
         android:name=".CampusMateApp"
         android:allowBackup="true"
@@ -49,6 +58,35 @@
             android:name=".activities.AddEditDeadlineActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.ResourceListActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:name=".activities.AddEditResourceActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.BookSearchActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Foreground service: downloads a file with a progress notification -->
+        <service
+            android:name=".services.DownloadService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <!-- FileProvider: lets OTHER apps open / receive our private files through content:// Uris -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

@@ -279,5 +279,99 @@
     <string name="perm_open_settings">Open Settings</string>
     <string name="perm_continue_without">Save without reminders</string>
 
+    <!-- ===== Stage 5-7: Resource Library, Download service, Books ===== -->
+    <string name="notif_channel_downloads_name">Downloads</string>
+    <string name="notif_channel_downloads_desc">Progress and result of file downloads</string>
+    <string name="notif_download_title">Downloading %1$s</string>
+    <string name="notif_download_waiting">Starting…</string>
+    <string name="notif_download_percent">%1$d%% done</string>
+    <string name="notif_download_cancel">Cancel</string>
+    <string name="notif_download_done">Download complete. Tap to open your library.</string>
+    <string name="notif_download_failed_network">Download failed. Check your connection and try again.</string>
+    <string name="notif_download_failed_not_file">This link is a web page, not a file you can download.</string>
+    <string name="notif_download_failed_insecure">Only secure (https) links can be downloaded.</string>
+    <string name="notif_download_cancelled">Download cancelled.</string>
+    <string name="perm_downloads_message">CampusMate shows the download progress as a notification. Allow notifications to see it. The download works even if you say no.</string>
+
+    <string name="resources_title_course">%1$s resources</string>
+    <string name="resources_search_hint">Search title, topic, author or course</string>
+    <string name="resources_filter_all">All</string>
+    <string name="resources_filter_bookmarked">Bookmarked</string>
+    <string name="resources_filter_recent">Recent</string>
+    <string name="resources_category_hint">Category</string>
+    <string name="resources_all_categories">All categories</string>
+    <string name="resources_empty">Nothing here yet. Add a file or link, or find a book.</string>
+    <string name="resource_add">Add resource</string>
+    <string name="resource_find_books">Find books</string>
+    <string name="resource_action_share">Share</string>
+    <string name="resource_action_download">Download for offline</string>
+    <string name="resource_action_edit">Edit</string>
+    <string name="resource_action_delete">Delete</string>
+    <string name="resource_action_bookmark">Bookmark</string>
+    <string name="resource_action_more">More options</string>
+    <string name="resource_delete_title">Delete resource?</string>
+    <string name="resource_delete_message">\"%1$s\" and its saved file will be removed from this phone.</string>
+    <string name="resource_toast_not_available">This resource has no file or link to open</string>
+    <string name="resource_toast_no_app">No app found to open this</string>
+    <string name="resource_toast_offline">You are offline. Connect to the internet and try again.</string>
+    <string name="resource_toast_download_started">Download started</string>
+    <string name="resource_toast_downloaded">Download complete</string>
+    <string name="resource_toast_download_silent">Download runs without a notification</string>
+
+    <string name="resource_form_title_add">Add resource</string>
+    <string name="resource_form_title_edit">Edit resource</string>
+    <string name="resource_source_file">File</string>
+    <string name="resource_source_link">Web link</string>
+    <string name="resource_pick_image">Pick image</string>
+    <string name="resource_pick_document">Pick document</string>
+    <string name="resource_preview">Preview of the picked image</string>
+    <string name="resource_no_file">No file selected yet</string>
+    <string name="resource_file_info">%1$s · %2$s</string>
+    <string name="resource_link_hint">Web link (e.g. example.com/notes.pdf)</string>
+    <string name="resource_form_title_hint">Title</string>
+    <string name="resource_form_category_hint">Category</string>
+    <string name="resource_form_course_hint">Course</string>
+    <string name="resource_form_topic_hint">Topic (optional)</string>
+    <string name="resource_form_description_hint">Notes (optional)</string>
+    <string name="resource_form_save">Save</string>
+    <string name="resource_no_course">No course (general)</string>
+    <string name="resource_error_title">Enter a title</string>
+    <string name="resource_error_no_file">Pick a file first</string>
+    <string name="resource_error_link">Enter a valid web link</string>
+    <string name="resource_toast_copy_failed">Could not read that file. Try another one.</string>
+    <string name="resource_toast_save_failed">Could not save</string>
+    <string name="resource_toast_saved">Saved</string>
+
+    <string name="books_title">Find books online</string>
+    <string name="books_search_hint">Title, author or subject</string>
+    <string name="books_search">Search</string>
+    <string name="books_retry">Try again</string>
+    <string name="books_cover">Book cover</string>
+    <string name="books_save">Save to library</string>
+    <string name="books_unknown_author">Unknown author</string>
+    <string name="books_first_published">First published %1$d</string>
+    <string name="books_hint_start">Search the Open Library catalogue for textbooks, for example Data Structures.</string>
+    <string name="books_error_empty">Enter something to search</string>
+    <string name="books_error_offline">You are offline. Connect to the internet and try again.</string>
+    <string name="books_error_timeout">The server took too long to answer. Try again.</string>
+    <string name="books_error_other">Something went wrong while searching. Try again later.</string>
+    <string name="books_empty">No books found for %1$s</string>
+    <string name="books_choose_course">Save to which course?</string>
+    <string name="books_toast_saved">Saved to your library</string>
+
+    <string-array name="resource_category_labels">
+        <item>Notes</item>
+        <item>Textbook</item>
+        <item>Slides</item>
+        <item>Handwritten notes</item>
+        <item>Image</item>
+        <item>Previous question</item>
+        <item>CT question</item>
+        <item>Lab manual</item>
+        <item>Lab report</item>
+        <item>Assignment</item>
+        <item>Link</item>
+        <item>Other</item>
+    </string-array>
 
 </resources>

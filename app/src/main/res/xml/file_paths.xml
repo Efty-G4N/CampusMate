@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FileProvider: which of OUR folders may be shared with other apps.
+     <files-path> = context.getFilesDir(); only the "resources" sub-folder is exposed. -->
+<paths>
+    <files-path
+        name="resources"
+        path="resources/" />
+</paths>

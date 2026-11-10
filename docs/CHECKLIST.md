@@ -23,11 +23,11 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 - ✅ View recycling
 
 ## Lecture 10
-- ⬜ Service (foreground, notification, progress)
+- ✅ Service (foreground, notification, progress)
 - ✅ WorkManager
 - ✅ BroadcastReceiver: Airplane mode (context-registered in HomeFragment onStart/onStop, status card)
 - ✅ BroadcastReceiver: Battery Saver (ACTION_POWER_SAVE_MODE_CHANGED, status card)
-- ⬜ Image picker and document picker (content URI)
+- ✅ Image picker and document picker (content URI)
 - ✅ Notifications (channels, tap navigation)
 - ✅ Runtime permissions
 
@@ -36,8 +36,8 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 - ⬜ Realtime Database CRUD
 - ⬜ Firestore create/read (update/delete)
 - ⬜ Firebase Storage upload/retrieve
-- ⬜ Volley HTTP request + JSON parsing (Open Library)
-- ⬜ Glide (placeholder, error)
+- ✅ Volley HTTP request + JSON parsing (Open Library)
+- ✅ Glide (placeholder, error)
 
 ---
 

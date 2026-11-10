@@ -131,6 +131,13 @@ public class CourseDetailActivity extends AppCompatActivity {
                     R.string.workspace_coming_soon, Toast.LENGTH_SHORT).show());
         }
 
+        // Resources is real now: the Resource Library filtered to THIS course.
+        binding.buttonResources.setOnClickListener(view -> {
+            Intent intent = new Intent(this, ResourceListActivity.class);
+            intent.putExtra(ResourceListActivity.EXTRA_COURSE_ID, courseId);
+            startActivity(intent);
+        });
+
         // Deadlines is real now: open the list filtered to THIS course.
         binding.buttonDeadlines.setOnClickListener(view -> {
             Intent intent = new Intent(this, DeadlinesActivity.class);
