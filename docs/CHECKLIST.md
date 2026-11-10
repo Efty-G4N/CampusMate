@@ -25,8 +25,8 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 ## Lecture 10
 - ⬜ Service (foreground, notification, progress)
 - ⬜ WorkManager
-- ⬜ BroadcastReceiver: Airplane mode
-- ⬜ BroadcastReceiver: Battery Saver
+- ✅ BroadcastReceiver: Airplane mode (context-registered in HomeFragment onStart/onStop, status card)
+- ✅ BroadcastReceiver: Battery Saver (ACTION_POWER_SAVE_MODE_CHANGED, status card)
 - ⬜ Image picker and document picker (content URI)
 - ⬜ Notifications (channels, tap navigation)
 - ⬜ Runtime permissions
@@ -74,3 +74,4 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 - ✅ Housekeeping: TeacherAdapter moved to adapters/; seeding moved to CampusMateApp (Application class); temporary test block removed from MainActivity
 - ✅ Schedule screen (RecyclerView with two view types: day header and class card; daily/weekly toggle; next class card; filtered by section and lab group)
 - ✅ Course add / edit / delete (form validation, type dropdown with ArrayAdapter, color swatches, duplicate code check, delete confirm dialog, ActivityResult for delete)
+- ✅ Home system status card (live Airplane mode and Battery Saver state)

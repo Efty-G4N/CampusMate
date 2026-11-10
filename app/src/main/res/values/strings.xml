@@ -189,5 +189,17 @@
     <string name="course_delete_message">%1$s will be deleted together with its routine classes and teacher links. This cannot be undone.</string>
     <string name="course_delete_confirm">Delete</string>
     <string name="course_delete_cancel">Cancel</string>
+    <!-- System status (Broadcast Receivers) -->
+    <string name="system_status_title">System status</string>
+    <string name="system_airplane">Airplane mode: %1$s</string>
+    <string name="system_power_save">Battery Saver: %1$s</string>
+    <string name="system_state_on">On</string>
+    <string name="system_state_off">Off</string>
+    <string name="system_hint_airplane">Airplane mode is on: online features (sync, book search) will wait for a connection.</string>
+    <string name="system_hint_power_save">Battery Saver is on: reminders and background sync may be delayed.</string>
+    <string name="system_toast_airplane_on">Airplane mode turned on</string>
+    <string name="system_toast_airplane_off">Airplane mode turned off</string>
+    <string name="system_toast_power_on">Battery Saver turned on</string>
+    <string name="system_toast_power_off">Battery Saver turned off</string>
 
 </resources>
