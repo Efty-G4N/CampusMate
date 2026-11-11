@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.eftyg4n.campusmate.utils.AccessGate;
 import com.eftyg4n.campusmate.R;
 import com.eftyg4n.campusmate.activities.AddEditDeadlineActivity;
 import com.eftyg4n.campusmate.activities.AttendanceActivity;
@@ -21,6 +22,7 @@ import com.eftyg4n.campusmate.activities.DeadlinesActivity;
 import com.eftyg4n.campusmate.activities.MainActivity;
 import com.eftyg4n.campusmate.activities.NoticesActivity;
 import com.eftyg4n.campusmate.databinding.FragmentHomeBinding;
+import com.eftyg4n.campusmate.firebase.SyncManager;
 import com.eftyg4n.campusmate.models.Course;
 import com.eftyg4n.campusmate.models.Deadline;
 import com.eftyg4n.campusmate.models.Routine;
@@ -63,6 +65,9 @@ public class HomeFragment extends Fragment {
 
         binding.cardNextClass.setOnClickListener(view -> openTab(R.id.nav_schedule));
         binding.cardAttendance.setOnClickListener(view -> {
+            if (!AccessGate.require(requireContext(), R.string.gate_attendance)) {
+                return;
+            }
             if (attendanceCourseId == null) {
                 openTab(R.id.nav_courses);
                 return;
@@ -96,6 +101,13 @@ public class HomeFragment extends Fragment {
                 refreshSystemStatus();
                 showToast(enabled ? R.string.system_toast_power_on
                         : R.string.system_toast_power_off);
+            }
+        });
+
+        // A profile arriving from the cloud (sign in) updates the greeting by itself.
+        SyncManager.profileChanged.observe(getViewLifecycleOwner(), version -> {
+            if (binding != null) {
+                refreshHome();
             }
         });
 
@@ -251,6 +263,13 @@ public class HomeFragment extends Fragment {
         Context context = requireContext();
         attendanceCourseId = null;
         binding.progressAttendance.setVisibility(View.GONE);
+
+        // Attendance is personal: a guest only sees a lock message.
+        if (!AccessGate.isSignedIn()) {
+            binding.textAttendanceLine.setText(R.string.home_attendance_locked);
+            binding.textAttendanceHint.setText("");
+            return;
+        }
 
         if (current == null) {
             binding.textAttendanceLine.setText(R.string.home_no_semester);

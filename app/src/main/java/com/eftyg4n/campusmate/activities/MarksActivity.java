@@ -13,6 +13,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.eftyg4n.campusmate.utils.AccessGate;
 import com.eftyg4n.campusmate.R;
 import com.eftyg4n.campusmate.adapters.MarkAdapter;
 import com.eftyg4n.campusmate.databinding.ActivityMarksBinding;
@@ -40,6 +41,11 @@ public class MarksActivity extends AppCompatActivity implements MarkAdapter.List
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Also checked here, in case the session ended while a screen was open.
+        if (!AccessGate.require(this, R.string.gate_marks)) {
+            finish();
+            return;
+        }
         binding = ActivityMarksBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 

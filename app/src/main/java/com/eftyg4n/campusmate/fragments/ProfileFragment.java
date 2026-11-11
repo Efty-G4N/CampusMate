@@ -3,7 +3,6 @@ import android.content.Intent;
 import android.text.format.DateUtils;
 import com.eftyg4n.campusmate.activities.AuthActivity;
 import com.eftyg4n.campusmate.activities.MainActivity;
-import com.eftyg4n.campusmate.activities.SemestersActivity;
 import com.eftyg4n.campusmate.activities.WelcomeActivity;
 import com.eftyg4n.campusmate.utils.AppLock;
 import com.eftyg4n.campusmate.utils.AppPrefs;
@@ -32,6 +31,7 @@ import com.eftyg4n.campusmate.databinding.FragmentProfileBinding;
 import com.eftyg4n.campusmate.models.ClassGroup;
 import com.eftyg4n.campusmate.models.Classmate;
 import com.eftyg4n.campusmate.models.Semester;
+import com.eftyg4n.campusmate.database.DatabaseHelper;
 import com.eftyg4n.campusmate.models.UserProfile;
 import com.eftyg4n.campusmate.repositories.ClassGroupRepository;
 import com.eftyg4n.campusmate.repositories.ClassmateRepository;
@@ -84,11 +84,13 @@ public class ProfileFragment extends Fragment {
         binding.buttonSignIn.setOnClickListener(view ->
                 startActivity(new Intent(requireContext(), AuthActivity.class)));
         binding.buttonSyncNow.setOnClickListener(view -> syncNow());
-        binding.buttonSignOut.setOnClickListener(view -> {
-            FirebaseAuth.getInstance().signOut();
-            Toast.makeText(requireContext(), R.string.account_toast_signed_out,
-                    Toast.LENGTH_SHORT).show();
-            updateAccountCard();
+        binding.buttonSignOut.setOnClickListener(view -> signOut());
+
+        // The cloud copy of the profile changed (sign in, or an edit from another phone).
+        SyncManager.profileChanged.observe(getViewLifecycleOwner(), version -> {
+            if (binding != null) {
+                loadProfile();
+            }
         });
 
         setupSettingsCard();
@@ -96,7 +98,7 @@ public class ProfileFragment extends Fragment {
         return binding.getRoot();
     }
 
-    // ---------- App settings: lock, semesters, welcome preview ----------
+    // ---------- App settings: fingerprint / screen lock ----------
 
     private boolean updatingLockSwitch;
 
@@ -106,13 +108,6 @@ public class ProfileFragment extends Fragment {
             if (!updatingLockSwitch) {
                 changeLock(checked);
             }
-        });
-        binding.buttonSemesters.setOnClickListener(view ->
-                startActivity(new Intent(requireContext(), SemestersActivity.class)));
-        // A way to see the welcome screen again without clearing the app's data.
-        binding.buttonShowWelcome.setOnClickListener(view -> {
-            AppPrefs.clearOnboarded(requireContext());
-            startActivity(new Intent(requireContext(), WelcomeActivity.class));
         });
     }
 
@@ -196,6 +191,53 @@ public class ProfileFragment extends Fragment {
                 last, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)));
     }
 
+    // The profile belongs to the account, so it leaves this phone with the account.
+    // It is safe in the cloud, but a change that was not uploaded yet must go up first.
+    private void signOut() {
+        UserProfile saved = profileRepo.getProfile();
+        boolean unsaved = saved != null
+                && saved.getSyncStatus() == DatabaseHelper.SYNC_PENDING;
+        if (!unsaved) {
+            finishSignOut();
+            return;
+        }
+        if (!NetworkUtils.isOnline(requireContext())) {
+            Toast.makeText(requireContext(), R.string.account_signout_need_online,
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+        binding.buttonSignOut.setEnabled(false);
+        SyncManager.syncNow(requireContext(), new SyncManager.Callback() {
+            @Override
+            public void onDone(int pushed, int pulled) {
+                if (binding != null) {
+                    finishSignOut();
+                }
+            }
+
+            @Override
+            public void onError(int reason) {
+                if (binding == null) {
+                    return;
+                }
+                binding.buttonSignOut.setEnabled(true);
+                Toast.makeText(requireContext(), R.string.account_sync_failed,
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void finishSignOut() {
+        Context app = requireContext().getApplicationContext();
+        SyncManager.signOut(app);
+        Toast.makeText(app, R.string.account_toast_signed_out, Toast.LENGTH_SHORT).show();
+        // Back to the welcome screen: sign in as someone else, or continue without an account.
+        AppPrefs.clearOnboarded(app);
+        Intent intent = new Intent(app, WelcomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
     private void syncNow() {
         if (!NetworkUtils.isOnline(requireContext())) {
             Toast.makeText(requireContext(), R.string.resource_toast_offline,
@@ -235,11 +277,7 @@ public class ProfileFragment extends Fragment {
         binding.progressSync.setVisibility(View.GONE);
         binding.buttonSyncNow.setEnabled(true);
         updateAccountCard();
-        // A fresh install may have just received the profile from the cloud.
-        // (Only then: reloading would throw away what the student typed but did not save.)
-        if (profile == null) {
-            loadProfile();
-        }
+        // A new profile from the cloud is shown by the profileChanged observer.
     }
 
     // Fills the form with the saved profile (or with defaults for a new student).
@@ -404,6 +442,10 @@ public class ProfileFragment extends Fragment {
             profile = toSave;
             updateHeader();
             Toast.makeText(requireContext(), R.string.profile_saved, Toast.LENGTH_SHORT).show();
+            // Signed in: the change is saved to the account right away (cloud backup).
+            if (SyncManager.currentUser() != null) {
+                SyncManager.syncNow(requireContext(), null);
+            }
             if (firstSave && requireActivity() instanceof MainActivity) {
                 // First profile ever: show the student what it unlocked (routine, attendance).
                 ((MainActivity) requireActivity()).openTab(R.id.nav_home);

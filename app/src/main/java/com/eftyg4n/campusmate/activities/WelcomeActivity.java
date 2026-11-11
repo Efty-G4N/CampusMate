@@ -16,7 +16,7 @@ import com.eftyg4n.campusmate.repositories.UserProfileRepository;
 import com.eftyg4n.campusmate.utils.AnimUtils;
 import com.eftyg4n.campusmate.utils.AppPrefs;
 
-// Shown once to a new student. Three honest choices; an account is never forced,
+// Shown to a new student and after signing out. Sign in, create an account, or skip: an account is never forced,
 // because every feature except the cloud ones works offline without it.
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -43,14 +43,13 @@ public class WelcomeActivity extends AppCompatActivity {
             return insets;
         });
 
-        binding.buttonCreate.setOnClickListener(view -> openAuth(true));
         binding.buttonSignIn.setOnClickListener(view -> openAuth(false));
+        binding.buttonCreate.setOnClickListener(view -> openAuth(true));
         binding.buttonSkip.setOnClickListener(view -> finishOnboarding(false));
 
         if (savedInstanceState == null) {
             AnimUtils.staggerIn(binding.imageLogo, binding.textTitle, binding.textTagline,
-                    binding.layoutFeatures, binding.buttonCreate, binding.buttonSignIn,
-                    binding.buttonSkip, binding.textNote);
+                    binding.cardChoices, binding.layoutFeatures);
         }
     }
 

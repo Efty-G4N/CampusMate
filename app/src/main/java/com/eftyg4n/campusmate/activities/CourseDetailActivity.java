@@ -21,6 +21,7 @@ import com.eftyg4n.campusmate.models.Course;
 import com.eftyg4n.campusmate.models.Teacher;
 import com.eftyg4n.campusmate.repositories.CourseRepository;
 import com.eftyg4n.campusmate.repositories.TeacherRepository;
+import com.eftyg4n.campusmate.utils.AccessGate;
 import com.eftyg4n.campusmate.utils.TeacherCardBinder;
 
 import java.util.List;
@@ -132,12 +133,19 @@ public class CourseDetailActivity extends AppCompatActivity {
         }
 
         // Marks, Syllabus and Lectures: each opens its own screen for THIS course.
-        binding.buttonMarks.setOnClickListener(view -> openForCourse(MarksActivity.class));
+        binding.buttonMarks.setOnClickListener(view -> {
+            if (AccessGate.require(this, R.string.gate_marks)) {
+                openForCourse(MarksActivity.class);
+            }
+        });
         binding.buttonSyllabus.setOnClickListener(view -> openForCourse(SyllabusActivity.class));
         binding.buttonLectures.setOnClickListener(view -> openForCourse(LecturesActivity.class));
 
         // Attendance is real now: present / absent log of THIS course.
         binding.buttonAttendance.setOnClickListener(view -> {
+            if (!AccessGate.require(this, R.string.gate_attendance)) {
+                return;
+            }
             Intent intent = new Intent(this, AttendanceActivity.class);
             intent.putExtra(AttendanceActivity.EXTRA_COURSE_ID, courseId);
             startActivity(intent);

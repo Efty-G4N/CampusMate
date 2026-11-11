@@ -142,15 +142,17 @@ public class AuthActivity extends AppCompatActivity {
         if (newEmailAccount && user != null) {
             user.sendEmailVerification(); // best effort, we do not block the student
         }
-        // Upload this phone's data (and download the cloud copy) in the background.
-        SyncManager.onSignedIn(getApplicationContext());
-
-        if (!isDestroyed()) {
-            Toast.makeText(this, newEmailAccount ? R.string.auth_toast_registered
-                    : R.string.auth_toast_signed_in, Toast.LENGTH_SHORT).show();
-            setResult(RESULT_OK);
-            finish();
-        }
+        // Wait for the first sync, so the account's own profile is already on the phone
+        // when the next screen opens (a few seconds at most).
+        setBusy(true);
+        SyncManager.onSignedIn(getApplicationContext(), () -> {
+            if (!isDestroyed()) {
+                Toast.makeText(this, newEmailAccount ? R.string.auth_toast_registered
+                        : R.string.auth_toast_signed_in, Toast.LENGTH_SHORT).show();
+                setResult(RESULT_OK);
+                finish();
+            }
+        });
     }
 
     private void sendResetEmail() {

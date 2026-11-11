@@ -3,7 +3,11 @@ package com.eftyg4n.campusmate.firebase;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+
+import androidx.lifecycle.MutableLiveData;
 
 import com.eftyg4n.campusmate.database.DatabaseHelper;
 import com.eftyg4n.campusmate.models.Course;
@@ -27,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 // Two-way sync between SQLite (the truth on this phone) and Firebase Realtime Database.
 //
@@ -61,6 +66,11 @@ public final class SyncManager {
     public static final int ERROR_NOT_CONFIGURED = 3;
     public static final int ERROR_NETWORK_OR_RULES = 4;
 
+    // Bumped whenever the profile on this phone was replaced by the cloud copy,
+    // so the open screens can show it without waiting for a restart.
+    public static final MutableLiveData<Integer> profileChanged = new MutableLiveData<>();
+    private static int profileVersion;
+
     private static boolean running; // main thread only
 
     private SyncManager() {
@@ -78,21 +88,84 @@ public final class SyncManager {
         return prefs(context).getLong(KEY_LAST_SYNC, 0);
     }
 
-    // Called right after a successful sign in / register.
-    public static void onSignedIn(Context context) {
+    // Called right after a successful sign in / register. `done` runs once, on the main
+    // thread, when the first sync is over (or after a few seconds if the network is slow),
+    // so the next screen already finds the account's profile on the phone.
+    public static void onSignedIn(Context context, Runnable done) {
         Context app = context.getApplicationContext();
+        AtomicBoolean finished = new AtomicBoolean(false);
+        Runnable finish = () -> {
+            if (finished.compareAndSet(false, true) && done != null) {
+                done.run();
+            }
+        };
+        new Handler(Looper.getMainLooper()).postDelayed(finish, 8000);
+
         FirebaseUser user = currentUser();
         if (user == null) {
+            finish.run();
             return;
         }
-        // A different account on the same phone: this phone's data must be uploaded
-        // to the NEW account too, so everything becomes "pending" again.
+        Callback whenSynced = new Callback() {
+            @Override
+            public void onDone(int pushed, int pulled) {
+                finish.run();
+            }
+
+            @Override
+            public void onError(int reason) {
+                finish.run();
+            }
+        };
+
         String previous = prefs(app).getString(KEY_UID, null);
-        if (!user.getUid().equals(previous)) {
-            markEverythingPending(app);
-            prefs(app).edit().putString(KEY_UID, user.getUid()).apply();
+        if (user.getUid().equals(previous)) {
+            syncNow(app, whenSynced);
+            return;
         }
-        syncNow(app, null);
+
+        // A different account on this phone: the profile must become the ACCOUNT's profile,
+        // so the cloud copy is looked at before anything is uploaded.
+        prefs(app).edit().putString(KEY_UID, user.getUid()).apply();
+        try {
+            FirebaseDatabase.getInstance().getReference("users").child(user.getUid())
+                    .child("profile").get().addOnCompleteListener(task -> {
+                        UserProfileRepository repo = new UserProfileRepository(app);
+                        if (task.isSuccessful() && task.getResult() != null
+                                && task.getResult().exists()) {
+                            // The account already has a profile: it replaces whatever is here.
+                            restoreProfile(app, task.getResult());
+                        } else if (task.isSuccessful() && repo.getProfile() != null) {
+                            // A brand new account: it adopts the profile made on this phone.
+                            markProfilePending(app);
+                        }
+                        // The rest of this phone's data goes up to the new account as before.
+                        markDataPending(app);
+                        syncNow(app, whenSynced);
+                    });
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Realtime Database is not configured", e);
+            finish.run();
+        }
+    }
+
+    // Signing out takes the profile off this phone (it stays in the cloud account), so the
+    // next person who signs in, or a guest, never sees it.
+    public static void signOut(Context context) {
+        Context app = context.getApplicationContext();
+        try {
+            FirebaseAuth.getInstance().signOut();
+        } catch (RuntimeException e) {
+            Log.w(TAG, "Sign out: " + e.getMessage());
+        }
+        UserProfileRepository repo = new UserProfileRepository(app);
+        UserProfile profile = repo.getProfile();
+        if (profile != null) {
+            repo.delete(profile.getId());
+        }
+        prefs(app).edit().remove(KEY_UID).apply();
+        profileVersion++;
+        profileChanged.postValue(profileVersion);
     }
 
     public static void syncNow(Context context, Callback callback) {
@@ -274,27 +347,51 @@ public final class SyncManager {
             count++;
         }
 
-        // Profile: only restored when this phone has none (a fresh install).
+        // Profile: the account's copy wins when this phone has none, or when the copy in the
+        // cloud is newer (it was edited from another phone) and nothing here is waiting to upload.
         UserProfileRepository profileRepo = new UserProfileRepository(app);
         DataSnapshot remoteProfile = all.child("profile");
-        if (remoteProfile.exists() && profileRepo.getProfile() == null) {
-            UserProfile p = new UserProfile();
-            p.setName(str(remoteProfile, "name"));
-            p.setUniversity(str(remoteProfile, "university"));
-            p.setDepartment(str(remoteProfile, "department"));
-            p.setSession(str(remoteProfile, "session"));
-            p.setYearNo((int) lng(remoteProfile, "yearNo"));
-            p.setTermNo((int) lng(remoteProfile, "termNo"));
-            p.setSection(str(remoteProfile, "section"));
-            p.setLabGroup(str(remoteProfile, "labGroup"));
-            p.setRollNo(str(remoteProfile, "rollNo"));
-            long digits = lng(remoteProfile, "rollSerialDigits");
-            p.setRollSerialDigits(digits > 0 ? (int) digits : 3);
-            if (profileRepo.save(p)) {
-                count++;
+        if (remoteProfile.exists()) {
+            UserProfile local = profileRepo.getProfile();
+            boolean localIsSynced = local != null
+                    && local.getSyncStatus() == DatabaseHelper.SYNC_SYNCED;
+            if (local == null
+                    || (localIsSynced && lng(remoteProfile, "updatedAt") > local.getUpdatedAt())) {
+                if (restoreProfile(app, remoteProfile)) {
+                    count++;
+                }
             }
         }
         return count;
+    }
+
+    // Writes the cloud profile into the one local profile row (created if missing).
+    private static boolean restoreProfile(Context app, DataSnapshot remote) {
+        UserProfileRepository repo = new UserProfileRepository(app);
+        UserProfile p = repo.getProfile();
+        if (p == null) {
+            p = new UserProfile();
+        }
+        p.setName(str(remote, "name"));
+        p.setEmail(str(remote, "email"));
+        p.setUniversity(str(remote, "university"));
+        p.setDepartment(str(remote, "department"));
+        p.setSession(str(remote, "session"));
+        p.setYearNo((int) lng(remote, "yearNo"));
+        p.setTermNo((int) lng(remote, "termNo"));
+        p.setSection(str(remote, "section"));
+        p.setLabGroup(str(remote, "labGroup"));
+        p.setRollNo(str(remote, "rollNo"));
+        long digits = lng(remote, "rollSerialDigits");
+        p.setRollSerialDigits(digits > 0 ? (int) digits : 3);
+        if (!repo.save(p)) {
+            return false;
+        }
+        // It came FROM the cloud, so there is nothing to upload.
+        markSynced(app, DatabaseHelper.TABLE_USER_PROFILE, p.getId());
+        profileVersion++;
+        profileChanged.postValue(profileVersion);
+        return true;
     }
 
     // ----- Deleting -----
@@ -385,13 +482,19 @@ public final class SyncManager {
                 DatabaseHelper.COL_ID + "=?", new String[]{id});
     }
 
-    private static void markEverythingPending(Context app) {
+    private static void markDataPending(Context app) {
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COL_SYNC_STATUS, DatabaseHelper.SYNC_PENDING);
         DatabaseHelper helper = DatabaseHelper.getInstance(app);
         helper.getWritableDatabase().update(DatabaseHelper.TABLE_DEADLINE, values, null, null);
         helper.getWritableDatabase().update(DatabaseHelper.TABLE_RESOURCE, values, null, null);
-        helper.getWritableDatabase().update(DatabaseHelper.TABLE_USER_PROFILE, values, null, null);
+    }
+
+    private static void markProfilePending(Context app) {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.COL_SYNC_STATUS, DatabaseHelper.SYNC_PENDING);
+        DatabaseHelper.getInstance(app).getWritableDatabase()
+                .update(DatabaseHelper.TABLE_USER_PROFILE, values, null, null);
     }
 
     private static void fail(Callback callback, int reason) {

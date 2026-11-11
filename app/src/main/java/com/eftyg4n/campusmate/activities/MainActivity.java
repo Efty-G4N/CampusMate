@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.eftyg4n.campusmate.R;
 import com.eftyg4n.campusmate.databinding.ActivityMainBinding;
+import com.eftyg4n.campusmate.firebase.SyncManager;
 import com.eftyg4n.campusmate.fragments.CoursesFragment;
 import com.eftyg4n.campusmate.fragments.HomeFragment;
 import com.eftyg4n.campusmate.fragments.ProfileFragment;
@@ -67,6 +68,11 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
+
+        // Signed in: fetch changes made to the account from another phone (profile included).
+        if (savedInstanceState == null && SyncManager.currentUser() != null) {
+            SyncManager.syncNow(getApplicationContext(), null);
+        }
 
         if (savedInstanceState == null) {
             boolean firstSetup = getIntent().getBooleanExtra(EXTRA_FIRST_SETUP, false);

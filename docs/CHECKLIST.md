@@ -102,3 +102,12 @@ Note: Lecture 8-11 here mean course Lecture 1-4.
 - ✅ Splash with animation, Welcome screen (create account / sign in / continue without account)
 - ✅ Home dashboard: greeting, next class, attendance watch, deadlines, quick actions
 - ✅ Screen transitions (theme animations) and staggered entrance animation
+
+## Stage 12
+- ✅ App lock (biometric / screen lock)
+- ✅ Welcome screen preview from Profile
+- ✅ CT and Marks
+- ✅ Syllabus checklist
+- ✅ Lecture History
+- ✅ Semester manager
+- ⬜ Firebase Storage (skipped, needs Blaze plan)
